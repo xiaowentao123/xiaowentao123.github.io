@@ -1,208 +1,241 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<meta name="robots" content="index, follow" />
-	<meta name="googlebot" content="index, follow, noarchive" />
-	<title>白乐天的博客 - home</title>
-	<link rel="icon" href="https://xiaowentao123.github.io/bitbug_favicon.ico" />
-	<meta name="description" content="" />
-
-	<meta name="generator" content="Hugo 0.59.1" />
-
-	
-
-	<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://xiaowentao123.github.io/MainPage.jpg"/>
-
-<meta name="twitter:title" content="home"/>
-<meta name="twitter:description" content=""/>
-
-	<meta property="og:title" content="home" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://xiaowentao123.github.io/" />
-
-<meta property="og:image" content="https://xiaowentao123.github.io/MainPage.jpg" />
-
-<meta property="og:updated_time" content="2019-11-22T14:43:21+08:00" />
-
-
-	
-	
-
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="https://xiaowentao123.github.io/css/bundle.min.css">
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
 </head>
-<body><header class="header">
-    <div class="header__title">
-        <a href="https://xiaowentao123.github.io/" class="header__title__link" alt="Home">
+<body>
+    <canvas id="draw" width="700" height="700" style="background-color:white;">
+
+    </canvas>
+</body>
+<script>
+
+
+    
+    function drawCurvePath( ctx,start,end, curveness ) {
+
+    var cp = [
+         ( start[ 0 ] + end[ 0 ] ) / 2 - ( start[ 1 ] - end[ 1 ] ) * curveness,
+         ( start[ 1 ] + end[ 1 ] ) / 2 - ( end[ 0 ] - start[ 0 ] ) * curveness
+    ];
+    // ctx.moveTo( start[ 0 ], start[ 1 ] );
+    ctx.quadraticCurveTo( 
+        cp[ 0 ], cp[ 1 ],
+        end[ 0 ], end[ 1 ]
+    );
+    }
+
+    function drawbunch(ctx,bnctr,bnd,bnh,bnro,bncur){ //bncur=[0.15,-0.1]
+        // console.log(ctx);
+        // ctx.clearRect(0,0,700,700);
+        let bnr=bnd/2;
+        let top=[bnctr[0]+bnh*Math.cos(Math.PI/2-bnro),bnctr[1]-bnh*Math.sin(Math.PI/2-bnro)];
+        let btmleft=[bnctr[0]-bnr*Math.cos(bnro),bnctr[1]-bnr*Math.sin(bnro)];
+        let btmright=[bnctr[0]+bnr*Math.cos(bnro),bnctr[1]+bnr*Math.sin(bnro)];
+
+        ctx.beginPath();
+        ctx.moveTo(btmleft[0],btmleft[1]);
+        drawCurvePath(ctx,btmleft,top,bncur[0]);
+        drawCurvePath(ctx,top,btmright,bncur[1]);
+        ctx.lineTo(btmleft[0],btmright);
+        ctx.stroke();
+        ctx.closePath();
+        ctx.fillStyle='rgba(0,0,0,1)';
+        ctx.fill();
+    }
+    function drawleaf(ctx,lfctr,lfr,lfcl){
+        ctx.beginPath();
+        ctx.arc(lfctr[0],lfctr[1],lfr,0,2*Math.PI,true);
+        // ctx.stroke();
+        ctx.closePath();
+        ctx.fillStyle=lfcl;
+        ctx.fill();
+    }
+    function drawHeart(ctx,hctr,hsca,hro,hcl){
+        ctx.save();
+        ctx.translate(hctr[0],hctr[1]);
+        ctx.rotate(hro);
+        ctx.font=hsca+'px'+' 微软雅黑';
+        ctx.fillStyle=hcl;
+        ctx.fillText('❤',0,0);
+        ctx.restore();
+    }
+    function animatebunch(){
+        // console.log(ctx);
+        
+        ctx.clearRect(0,0,screenW,screenH);
+        ctx.beginPath();
+        percent=(percent+1)%105;
+        // console.log(percent);
+        drawbunch(ctx,bunch[0],bunch[1]*percent*1.0/100,bunch[2]*percent*1.0/100,bunch[3],[bunch[4][0]*percent/100,bunch[4][1]]);
+       let id= requestAnimationFrame(animatebunch);
+        if(percent>100){
             
-            白乐天的博客
-            
-        </a>
-    </div>
-
-    <nav class="menu" aria-label="menu">
-    <ul class="menu__items" aria-label="menu">
+            cancelAnimationFrame(id);
+            // console.log(1);
+            animatebunch2();
+           
+        }
+    }
+    function animatebunch2(){
+        ctx.clearRect(0,0,screenW,screenH);
+        // ctx.beginPath();
+        percent2=(percent2+2)%105;
+        // percent3=(percent3+3)%100;
+        let top=[bunch[0][0]+bunch[2]*Math.cos(Math.PI/2-bunch[3]),bunch[0][1]-bunch[2]*Math.sin(Math.PI/2-bunch[3])];
+        let top_b3=[bunch3[0][0]+bunch3[2]*percent2/100*Math.cos(Math.PI/2-bunch3[3]),bunch3[0][1]-bunch3[2]*percent2/100*Math.sin(Math.PI/2-bunch3[3])];
+        drawbunch(ctx,bunch[0],bunch[1],bunch[2],bunch[3],bunch[4]);
         
         
-        <li class="menu__items__item" aria-label="home">
-            <a href="/" class="menu__items__item__link active"
-                alt="home" role="menuitem">
-                home
-            </a>
-        </li>
+        drawbunch(ctx,bunch2[0],bunch2[1],bunch2[2]*1.0*percent2/100,bunch2[3],bunch2[4]);
+
+        drawleaf(ctx,top,bunch[2]*0.4*percent2*1.0/100,'rgba(76,175,80,0.7)');
+        drawbunch(ctx,bunch3[0],bunch3[1],bunch3[2]*1.0*percent2/100,bunch3[3],[bunch3[4][0]*percent/100,bunch3[4][1]]);
+        drawbunch(ctx,bunch4[0],bunch4[1],bunch4[2]*1.0*percent2/100,bunch4[3],[bunch4[4][0]*percent/100,bunch4[4][1]]);
+        drawleaf(ctx,top_b3,bunch3[2]*0.3*percent2*1.0/100,'rgba(255,204,51,0.7)')
+       
+        let id=requestAnimationFrame(animatebunch2);
+        if(percent2>100){
+            cancelAnimationFrame(id);
+            animatebunch3();
+        }
         
-        <li class="menu__items__item" aria-label="Blog">
-            <a href="/posts/" class="menu__items__item__link "
-                alt="Blog" role="menuitem">
-                Blog
-            </a>
-        </li>
-        
-    </ul>
-</nav>
-    <nav class="hamburger-menu" aria-label="mobile-menu">
-    <div class="toggle">
-        <input type="checkbox" class="hamburger__toggle" id="hamburgerToggle" name="hamburger toggle" aria-label="Hamburguer menu">
-        <label class="hamburger__toggle__icon" for="hamburgerToggle">
-            <i class="fas fa-bars"></i>
-        </label>
-
-        <ul class="hamburger__items" aria-label="mobile-menu">
-            
-            <li class="hamburger__items__item" aria-label="home">
-                <a href="/" class="hamburger__items__item__link" alt="home" role="menuitem">
-                    home
-                </a>
-            </li>
-            
-            <li class="hamburger__items__item" aria-label="Blog">
-                <a href="/posts/" class="hamburger__items__item__link" alt="Blog" role="menuitem">
-                    Blog
-                </a>
-            </li>
-            
-        </ul>
-    </div>
-</nav>
-</header>
-<main class="hero" 
-    style="background-image: url('https://xiaowentao123.github.io/images/MainPage.jpg');" >
-    <div class="hero__caption" >
-        <h1>BaiLeTian</h1>
-
-<p>白乐天的代码博客</p>
-
-        
-        <a href="https://xiaowentao123.github.io/" class="ripple-btn cta__btn" alt="联系我"
-    aria-label="联系我">
-    联系我
-</a>
-        
-    </div>
-</main>
-
-
-
-
-<section class="section">
-    <h1 class="section__title">关雎</h1>
-    <div class="section__content">
-        <p>关关雎鸠，在河之洲。 窈窕淑女，君子好逑。 参差荇菜，左右流之。 窈窕淑女，寤寐求之。</p>
-
-<p>求之不得，寤寐思服。 悠哉悠哉，辗转反侧。 参差荇菜，左右采之。 窈窕淑女，琴瑟友之。</p>
-
-<p>参差荇菜，左右芼之。 窈窕淑女，钟鼓乐之。</p>
-
-    </div>
-</section>
-
-
-
-
-
-
-
-<section class="section">
-    <h1 class="section__title">蒹葭</h1>
-    <div class="section__content">
-        <p>蒹葭苍苍，白露为霜。所谓伊人，在水一方。溯洄从之，道阻且长。溯游从之，宛在水中央。</p>
-
-<p>蒹葭萋萋，白露未晞。所谓伊人，在水之湄。溯洄从之，道阻且跻。溯游从之，宛在水中坻。</p>
-
-<p>蒹葭采采，白露未已。所谓伊人，在水之涘。溯洄从之，道阻且右。溯游从之，宛在水中沚。</p>
-
-    </div>
-</section>
-
-
-
-<footer class="footer">
+    }
     
+    function animatebunch3(){
+        ctx.clearRect(0,0,screenW,screenH);
+        percent3=(percent3+3)%105;
+        let top=[bunch[0][0]+bunch[2]*Math.cos(Math.PI/2-bunch[3]),bunch[0][1]-bunch[2]*Math.sin(Math.PI/2-bunch[3])];
+        let top_b3=[bunch3[0][0]+bunch3[2]*percent2/100*Math.cos(Math.PI/2-bunch3[3]),bunch3[0][1]-bunch3[2]*percent2/100*Math.sin(Math.PI/2-bunch3[3])];
+        let top_b3_1=[0.97*(bunch3_1[0][0]+bunch3_1[2]*percent3/100*Math.cos(Math.PI/2-bunch3_1[3])),bunch3_1[0][1]-bunch3_1[2]*percent3/100*Math.sin(Math.PI/2-bunch3_1[3])];
+        let top_b2=[bunch2[0][0]+bunch2[2]*Math.cos(Math.PI/2-bunch2[3]),bunch2[0][1]-bunch2[2]*Math.sin(Math.PI/2-bunch2[3])];
+        let top_b4=[0.95*(bunch4[0][0]+bunch4[2]*Math.cos(Math.PI/2-bunch4[3])),0.98*(bunch4[0][1]-bunch4[2]*Math.sin(Math.PI/2-bunch4[3]))];
+
+        drawbunch(ctx,bunch[0],bunch[1],bunch[2],bunch[3],bunch[4]);
+        drawbunch(ctx,bunch2[0],bunch2[1],bunch2[2],bunch2[3],bunch2[4]);
+        
+        drawleaf(ctx,top,bunch[2]*0.4,'rgba(51,153,51,0.7)');
+        drawbunch(ctx,bunch3[0],bunch3[1],bunch3[2],bunch3[3],bunch3[4]);
+        drawbunch(ctx,bunch4[0],bunch4[1],bunch4[2],bunch4[3],bunch4[4]);
+        drawleaf(ctx,top_b3,bunch3[2]*0.3,'rgba(255,204,51,0.7)')
+        drawbunch(ctx,bunch3_1[0],bunch3_1[1],bunch3_1[2]*percent3/100,bunch3_1[3],[bunch3_1[4][0]*percent/100,bunch3_1[4][1]]);
+        drawleaf(ctx,top_b3_1,bunch3_1[2]*0.7*percent3/100,'rgba(255,184,41,0.7)');
+        drawleaf(ctx,top_b2,bunch2[2]*0.6*percent3/100,'rgba(64,160,69,0.7)');
+        drawleaf(ctx,top_b4,bunch4[2]*0.5*percent3/100,'rgba(56,142,60,0.7)')
+        // drawHeart(ctx,[top[0]*0.9,top[1]],50,0*Math.PI/180,'rgba(255,122,122,1)');
+        let id=requestAnimationFrame(animatebunch3);
+        if(percent3>100){
+            cancelAnimationFrame(id);
+            animateflower();
+        }
+    }
+    function animateflower(){
+        // flower=(flower+3)%105;
+        ctx.clearRect(0,0,screenW,screenH);
+        let top=[bunch[0][0]+bunch[2]*Math.cos(Math.PI/2-bunch[3]),bunch[0][1]-bunch[2]*Math.sin(Math.PI/2-bunch[3])];
+        let top_b3=[bunch3[0][0]+bunch3[2]*percent2/100*Math.cos(Math.PI/2-bunch3[3]),bunch3[0][1]-bunch3[2]*percent2/100*Math.sin(Math.PI/2-bunch3[3])];
+        let top_b3_1=[0.97*(bunch3_1[0][0]+bunch3_1[2]*percent3/100*Math.cos(Math.PI/2-bunch3_1[3])),bunch3_1[0][1]-bunch3_1[2]*percent3/100*Math.sin(Math.PI/2-bunch3_1[3])];
+        let top_b2=[bunch2[0][0]+bunch2[2]*Math.cos(Math.PI/2-bunch2[3]),bunch2[0][1]-bunch2[2]*Math.sin(Math.PI/2-bunch2[3])];
+        let top_b4=[0.95*(bunch4[0][0]+bunch4[2]*Math.cos(Math.PI/2-bunch4[3])),0.98*(bunch4[0][1]-bunch4[2]*Math.sin(Math.PI/2-bunch4[3]))];
     
-    
+        drawbunch(ctx,bunch[0],bunch[1],bunch[2],bunch[3],bunch[4]);
+        drawbunch(ctx,bunch2[0],bunch2[1],bunch2[2],bunch2[3],bunch2[4]);
+        
+        drawleaf(ctx,top,bunch[2]*0.4,'rgba(51,153,51,0.7)');
+        drawbunch(ctx,bunch3[0],bunch3[1],bunch3[2],bunch3[3],bunch3[4]);
+        drawbunch(ctx,bunch4[0],bunch4[1],bunch4[2],bunch4[3],bunch4[4]);
+        drawleaf(ctx,top_b3,bunch3[2]*0.3,'rgba(255,204,51,0.7)')
+        drawbunch(ctx,bunch3_1[0],bunch3_1[1],bunch3_1[2]*percent3/100,bunch3_1[3],[bunch3_1[4][0]*percent/100,bunch3_1[4][1]]);
+        drawleaf(ctx,top_b3_1,bunch3_1[2]*0.7*percent3/100,'rgba(255,184,41,0.7)');
+        drawleaf(ctx,top_b2,bunch2[2]*0.6*percent3/100,'rgba(64,160,69,0.7)');
+        drawleaf(ctx,top_b4,bunch4[2]*0.5*percent3/100,'rgba(56,142,60,0.7)')
 
-    
-    <div class="footer__social">
+        let flowers=[
+            [top[0]+Math.cos(Math.PI*2*0.1)*bunch[2]*0.4*0.8,top[1]+Math.sin(Math.PI*2*0.1)*bunch[2]*0.4*0.8,50,Math.PI*0.3,'rgba(255,122,122,1)'],
+            [top[0]+Math.cos(Math.PI*2*0.5)*bunch[2]*0.4*1,top[1]+Math.sin(Math.PI*2*0.5)*bunch[2]*0.4*1,50,Math.PI*0.5,'rgba(255,122,122,1)'],
+            [top[0]+Math.cos(Math.PI*2*0.3)*bunch[2]*0.4*0.4,top[1]+Math.sin(Math.PI*2*0.3)*bunch[2]*0.4*0.4,50,Math.PI*0.3,'rgba(255,122,122,1)'],
+            [top[0]+Math.cos(Math.PI*2*0.75)*bunch[2]*0.4*0.8,top[1]+Math.sin(Math.PI*2*0.75)*bunch[2]*0.4*0.8,50,Math.PI*0.3,'rgba(255,122,122,1)'],
+            [top[0]+Math.cos(Math.PI*2*0.70)*bunch[2]*0.4*0.5,top[1]+Math.sin(Math.PI*2*0.70)*bunch[2]*0.4*0.5,50,Math.PI*0.3,'rgba(255,122,122,1)'],
+            [top[0]+Math.cos(Math.PI*2*0.50)*bunch[2]*0.4*0.4,top[1]+Math.sin(Math.PI*2*0.50)*bunch[2]*0.4*0.4,50,Math.PI*0.3,'rgba(255,122,122,1)'],
+            [top[0]+Math.cos(Math.PI*2*0.6)*bunch[2]*0.4*0.5,top[1]+Math.sin(Math.PI*2*0.6)*bunch[2]*0.4*0.5,50,Math.PI*0.3,'rgba(255,122,122,1)'],
+            [top[0]+Math.cos(Math.PI*2*1)*bunch[2]*0.4*0.7,top[1]+Math.sin(Math.PI*2*1)*bunch[2]*0.4*0.7,50,Math.PI*0.3,'rgba(255,122,122,1)'],
+            [top[0]+Math.cos(Math.PI*2*0.9)*bunch[2]*0.4*0.4,top[1]+Math.sin(Math.PI*2*0.9)*bunch[2]*0.4*0.4,50,Math.PI*0.3,'rgba(255,122,122,1)'],
+            [top[0]+Math.cos(Math.PI*2*0.3)*bunch[2]*0.4*0.9,top[1]+Math.sin(Math.PI*2*0.3)*bunch[2]*0.4*0.9,50,Math.PI*0.3,'rgba(255,122,122,1)'],
+            [top[0]+Math.cos(Math.PI*2*0.4)*bunch[2]*0.4*0.9,top[1]+Math.sin(Math.PI*2*0.4)*bunch[2]*0.4*0.9,50,Math.PI*0.3,'rgba(255,122,122,1)'],
+            [top[0]+Math.cos(Math.PI*2*0.65)*bunch[2]*0.4*0.9,top[1]+Math.sin(Math.PI*2*0.65)*bunch[2]*0.4*0.9,50,Math.PI*0.3,'rgba(255,122,122,1)'],
+            [top[0]+Math.cos(Math.PI*2*0.13)*bunch[2]*0.4*1.2,top[1]+Math.sin(Math.PI*2*0.13)*bunch[2]*0.4*1.2,50,Math.PI*0.3,'rgba(255,122,122,1)'],
+            [top[0]+Math.cos(Math.PI*2*0.13)*bunch[2]*0.4*1.9,top[1]+Math.sin(Math.PI*2*0.13)*bunch[2]*0.4*1.9,50,Math.PI*0.3,'rgba(255,122,122,1)'],
+            [top[0]+Math.cos(Math.PI*2*0.17)*bunch[2]*0.4*1.9,top[1]+Math.sin(Math.PI*2*0.17)*bunch[2]*0.4*1.9,50,Math.PI*0.3,'rgba(255,122,122,1)'],
+            [top[0]+Math.cos(Math.PI*2*0.2)*bunch[2]*0.4*1.5,top[1]+Math.sin(Math.PI*2*0.2)*bunch[2]*0.4*1.5,50,Math.PI*0.3,'rgba(255,122,122,1)'],
+            [top[0]+Math.cos(Math.PI*2*0.2)*bunch[2]*0.4*1.1,top[1]+Math.sin(Math.PI*2*0.2)*bunch[2]*0.4*1.1,50,Math.PI*0.3,'rgba(255,122,122,1)'],
+            [top[0]+Math.cos(Math.PI*2*0.1)*bunch[2]*0.4*1.5,top[1]+Math.sin(Math.PI*2*0.1)*bunch[2]*0.4*1.5,50,Math.PI*0.3,'rgba(255,122,122,1)'],
+            [top[0]+Math.cos(Math.PI*2*0.05)*bunch[2]*0.4*1.3,top[1]+Math.sin(Math.PI*2*0.05)*bunch[2]*0.4*1.3,50,Math.PI*0.3,'rgba(255,122,122,1)'],
+            [top[0]+Math.cos(Math.PI*2*0.16)*bunch[2]*0.4*1.5,top[1]+Math.sin(Math.PI*2*0.16)*bunch[2]*0.4*1.5,50,Math.PI*0.3,'rgba(255,122,122,1)'],
+            [top[0]+Math.cos(Math.PI*2*0.1)*bunch[2]*0.4*2.0,top[1]+Math.sin(Math.PI*2*0.1)*bunch[2]*0.4*2.0,50,Math.PI*0.3,'rgba(255,122,122,1)'],
+
+
         
         
-        <a href="https://www.baidu.com" class="footer__social__link" alt="weibo" target="_blank" aria-label="https://www.baidu.com" rel="noopener">
-            <span>
-                <i class="fab fa-weibo"></i>
-            </span>
-        </a>
+        ];
+      
+        for(let i in flowers){
+           
+            setTimeout(() => {
+                drawHeart(ctx,[flowers[i][0],flowers[i][1]],flowers[i][2],0,'rgba(255,122,122,1)');
+            }, i*100);
+            // drawHeart(ctx,[flowers[i][0],flowers[i][1]],flowers[i][2],0,'rgba(255,122,122,1)');
+        }
+        // ctx.fillText('520',bunch[0][0]+100,bunch[0][1]-100)
+        // let id=requestAnimationFrame(animateflower);
+        // if(flower>100){
+        //     cancelAnimationFrame(id);
+        // }
+       
+        setTimeout(()=>{
+            ctx.font='100px 微软雅黑';
+            ctx.fillStyle='#FF6161';
+            ctx.fillText('妇女节快乐！',bunch[0][0]*1.1,bunch[0][1]*0.95);
+        },(flowers.length+2)*100)
+        console.log(top);
+        console.log('finish');
+    }
+    function draw(){
+        let canvas=document.getElementById('draw');
+        let ctx=canvas.getContext('2d');
+      
+        let bunch=[[350,700],50,350,0];
+        let bunch2=[[330,500],20,100,45];
+        // animatebunch(ctx,bunch);
         
-        
-    </div>
-    
-    
-
-    <address class="footer__contact">
-        
-
-        
-
-        
-
-        
-    </address>
-
-    <div class="copy">
-        
-        <p>© 2019 - 白乐天的博客</p>
-        
-    </div>
-
-    
+        drawbunch(ctx,bunch[0],bunch[1],bunch[2],bunch[3]);
+        // drawbunch(ctx,[330,500],20,100,45);
+        // drawbunch(ctx,[330,550],20,100,-45);
+    }
+        var percent=0;
+        var percent2=0;
+        var percent3=0;
+        var flower=0;
+        var percentleaf=0;
+        var screenW=document.body.clientWidth-10;
+        var screenH=document.body.clientHeight-3;
+        var canvas=document.getElementById('draw');
+        canvas.setAttribute('width',screenW);
+        canvas.setAttribute('height',screenH);
 
 
+        var ctx=canvas.getContext('2d');
+      
+        var bunch=[[screenW/2,screenH],screenW*0.05,screenH*0.6,0,[0.15,-0.1]];
+        var bunch2=[[screenW/2-bunch[1]*0.5*0.5,screenH-bunch[2]*0.7],bunch[1]*0.35,bunch[2]*0.4,50*Math.PI/180,[0.3,-0.2]];
+        var bunch3=[[screenW/2-bunch[1]*0.5*1.1,screenH-bunch[2]*0.4],bunch[1]*0.5,bunch[2]*0.5,-55*Math.PI/180,[-0.2,0.2]];
+        var bunch4=[[screenW/2-bunch[1]*0.5*0.5,screenH-bunch[2]*0.5],bunch[1]*0.45,bunch[2]*0.6,80*Math.PI/180,[0.2,-0.2]];
+        var bunch3_1=[[bunch3[0][0]-bunch3[2]*0.35,bunch3[0][1]*0.85],bunch3[1]*0.8,bunch3[2]*0.5,15*Math.PI/180,[0.2,-0.2]];
+        animatebunch();
+    //    drawHeart(ctx,[500,300],20,45*Math.PI/180,'rgba(255,122,122,0.9)')
 
 
-<script src="https://xiaowentao123.github.io/js/bundle.min.243a483d5297388ef2f4a1b2d5e5d30218e01e8a2dfe213a376ea24d130837c860762a23e9daaa68ae3a7bcd5a3869287a14dc3b738f10486cf4e8fb4291b478.js"></script>
-
-
-
-
-
-
-
-<script
-	defer
-	src="https://use.fontawesome.com/releases/v5.7.2/js/all.js"
-    integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5&#43;&#43;eIfzYmTgBBmXYdhvxPc&#43;XcFEk&#43;zJwDgWbP"
-	crossorigin="anonymous"
-></script>
-
-
-</footer></body>
-
+</script>
 </html>
