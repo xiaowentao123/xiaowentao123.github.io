@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-flat-top.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.geekbrohood.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"changyan","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="从openGL的渲染管线图中可以看出，其实在顶点着色器和片段着色器之间还隐藏着一个着色器——几何着色器。这个着色器并不是必须的，如果不主动提供给openGL，它便会自己生成一个最基本几何着色器，即对顶点不做任何变换。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="几何着色器">
+<meta property="og:url" content="https://www.geekbrohood.cn/2024/01/29/%E5%87%A0%E4%BD%95%E7%9D%80%E8%89%B2%E5%99%A8/index.html">
+<meta property="og:site_name" content="白乐天的代码小站">
+<meta property="og:description" content="从openGL的渲染管线图中可以看出，其实在顶点着色器和片段着色器之间还隐藏着一个着色器——几何着色器。这个着色器并不是必须的，如果不主动提供给openGL，它便会自己生成一个最基本几何着色器，即对顶点不做任何变换。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.geekbrohood.cn/images/pipeline.png">
+<meta property="og:image" content="https://www.geekbrohood.cn/images/broken_after.png">
+<meta property="og:image" content="https://www.geekbrohood.cn/images/normalvision.png">
+<meta property="article:published_time" content="2024-01-28T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-01-28T16:00:00.000Z">
+<meta property="article:author" content="Bailetian">
+<meta property="article:tag" content="OpenGL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.geekbrohood.cn/images/pipeline.png">
+
+
+<link rel="canonical" href="https://www.geekbrohood.cn/2024/01/29/%E5%87%A0%E4%BD%95%E7%9D%80%E8%89%B2%E5%99%A8/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.geekbrohood.cn/2024/01/29/%E5%87%A0%E4%BD%95%E7%9D%80%E8%89%B2%E5%99%A8/","path":"2024/01/29/几何着色器/","title":"几何着色器"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>几何着色器 | 白乐天的代码小站</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">白乐天的代码小站</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Bailetian"
+      src="/images/Avatar.jpg">
+  <p class="site-author-name" itemprop="name">Bailetian</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaowentao123" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xiaowentao123" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:921036503@qq.com" title="E-Mail → mailto:921036503@qq.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/35335054" title="BiliBili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;35335054" rel="noopener me" target="_blank"><i class="fa-brands fa-bilibili fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://leetcode.cn/u/luo-sheng-tang-fu" title="Leetcode → https:&#x2F;&#x2F;leetcode.cn&#x2F;u&#x2F;luo-sheng-tang-fu" rel="noopener me" target="_blank"><i class="fa-solid fa-code fa-fw"></i></a>
+      </span>
+  </div>
+<div id="time-progress">
+        <p id="year-progress"></p>
+        <div class="progress-bar" id="year-progress-bar"></div>
+        <p id="month-progress"></p>
+        <div class="progress-bar" id="month-progress-bar"></div>
+        <p id="day-progress"></p>
+        <div class="progress-bar" id="day-progress-bar"></div>
+</div>
+<script src="/js/time-progress.js"></script>
+<style>
+#time-progress {
+    padding: 10px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+
+}
+
+.progress-bar {
+    height: 10px;
+    background-color: #4caf50;
+    border-radius: 5px;
+    margin: 5px 0;
+    width: 0;
+}
+
+#year-progress,#month-progress,#day-progress{
+    margin: 5px 0;
+    font-size: 14px;
+    color:black;
+    font-weight:bold;
+}
+</style>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa-solid fa-link fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://skyleaf.cn/" title="https:&#x2F;&#x2F;skyleaf.cn&#x2F;" rel="noopener" target="_blank">yesky的博客</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.geekbrohood.cn/2024/01/29/%E5%87%A0%E4%BD%95%E7%9D%80%E8%89%B2%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Avatar.jpg">
+      <meta itemprop="name" content="Bailetian">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="白乐天的代码小站">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="几何着色器 | 白乐天的代码小站">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          几何着色器
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-01-29 00:00:00" itemprop="dateCreated datePublished" datetime="2024-01-29T00:00:00+08:00">2024-01-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>从openGL的渲染管线图中可以看出，其实在顶点着色器和片段着色器之间还隐藏着一个着色器——几何着色器。这个着色器并不是必须的，如果不主动提供给openGL，它便会自己生成一个最基本几何着色器，即对顶点不做任何变换。<span id="more"></span><br />
+<img src="/images/pipeline.png" alt="" /></p>
+<p>从它的名字也可以很容易看出，几何着色器主要是针对物体进行变换的。与顶点着色器中的模型矩阵不同的是，模型矩阵是针对所有顶点进行变换，而几何着色器甚至可以精确到每一个顶点。</p>
+<p>几何着色器处理的对象是图元，也即是构成模型最基本的图形，这里可以是三角形，点或者是线段。通过对图元的操作，几何着色器可以将图元形状改变，抑或是增加图元的顶点或移动图元。几何着色器这种更改图元的方式相比直接修改原模型顶点要高效很多，因为这是GPU在处理。下面通过两个具体的例子来说明几何着色器的作用。</p>
+<blockquote>
+<p>物体爆破特效</p>
+</blockquote>
+<p>物体爆破特效在游戏中经常被用到，例如对墙体的爆破等等。这些特效大多都是用几何着色器来实现，虽然无法复刻像游戏那样的爆破效果，但是我们还是可以尝试写一个简单的爆破特效。思路是：将<code>mesh</code>里面的每个图元都沿法线方向位移，这样便可以呈现出物体沿法线膨胀开裂的效果。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#version 330 core</span></span><br><span class="line"><span class="built_in">layout</span>(triangles) in;</span><br><span class="line"><span class="built_in">layout</span>(triangle_strip,max_vertices=<span class="number">3</span>) out;</span><br><span class="line"></span><br><span class="line">in VS_OUT&#123;</span><br><span class="line">    vec2 Texcoord;</span><br><span class="line">    vec3 Normal;</span><br><span class="line">    vec3 Pos;</span><br><span class="line">&#125;gs_in[];</span><br><span class="line"></span><br><span class="line">out GS_OUT&#123;</span><br><span class="line"></span><br><span class="line">    vec2 Texcoord;</span><br><span class="line">    vec3 Normal;</span><br><span class="line">    vec3 Pos;</span><br><span class="line"></span><br><span class="line">&#125;gs_out;</span><br><span class="line"></span><br><span class="line">uniform <span class="type">float</span> time;</span><br><span class="line">uniform mat4 Model;</span><br><span class="line">uniform mat4 View;</span><br><span class="line">uniform mat4 Projection;</span><br><span class="line"><span class="function">vec3 <span class="title">getExplodeVec</span><span class="params">(vec3 normal,vec3 positon)</span></span>&#123;</span><br><span class="line">    vec3 result;</span><br><span class="line">    <span class="type">float</span> magnitude=<span class="number">2.f</span>;</span><br><span class="line">    result=positon+((<span class="built_in">sin</span>(time)<span class="number">+1.f</span>)/<span class="number">2.f</span>)*magnitude*normal;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">vec3 <span class="title">getNormal</span><span class="params">()</span></span>&#123;</span><br><span class="line">    vec3 a=gs_in[<span class="number">0</span>].Pos-gs_in[<span class="number">1</span>].Pos;</span><br><span class="line">    vec3 b=gs_in[<span class="number">1</span>].Pos-gs_in[<span class="number">2</span>].Pos;</span><br><span class="line">    vec3 result=<span class="built_in">normalize</span>(<span class="built_in">cross</span>(a,b));</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    vec3 tmppos;</span><br><span class="line">    vec3 normal=<span class="built_in">getNormal</span>();</span><br><span class="line">    tmppos=<span class="built_in">getExplodeVec</span>(gs_in[<span class="number">0</span>].Normal,gs_in[<span class="number">0</span>].Pos);</span><br><span class="line">    gl_Position=Projection*View*<span class="built_in">vec4</span>(tmppos,<span class="number">1.f</span>);</span><br><span class="line">    gs_out.Texcoord=gs_in[<span class="number">0</span>].Texcoord;</span><br><span class="line">    gs_out.Normal=gs_in[<span class="number">0</span>].Normal;</span><br><span class="line">    gs_out.Pos=gs_in[<span class="number">0</span>].Pos;</span><br><span class="line">    <span class="built_in">EmitVertex</span>();</span><br><span class="line"></span><br><span class="line">    tmppos=<span class="built_in">getExplodeVec</span>(gs_in[<span class="number">0</span>].Normal,gs_in[<span class="number">1</span>].Pos);</span><br><span class="line">    gl_Position=Projection*View*<span class="built_in">vec4</span>(tmppos,<span class="number">1.f</span>);</span><br><span class="line">    gs_out.Texcoord=gs_in[<span class="number">1</span>].Texcoord;</span><br><span class="line">    gs_out.Normal=gs_in[<span class="number">1</span>].Normal;</span><br><span class="line">    gs_out.Pos=gs_in[<span class="number">1</span>].Pos;</span><br><span class="line">    <span class="built_in">EmitVertex</span>();</span><br><span class="line"></span><br><span class="line">    tmppos=<span class="built_in">getExplodeVec</span>(gs_in[<span class="number">0</span>].Normal,gs_in[<span class="number">2</span>].Pos);</span><br><span class="line">    gl_Position=Projection*View*<span class="built_in">vec4</span>(tmppos,<span class="number">1.f</span>);</span><br><span class="line">    gs_out.Texcoord=gs_in[<span class="number">2</span>].Texcoord;</span><br><span class="line">    gs_out.Normal=gs_in[<span class="number">2</span>].Normal;</span><br><span class="line">    gs_out.Pos=gs_in[<span class="number">2</span>].Pos;</span><br><span class="line">    <span class="built_in">EmitVertex</span>();</span><br><span class="line"></span><br><span class="line">    <span class="built_in">EndPrimitive</span>();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先看前两行，这里的<code>layout</code>是指定输入和输出图元的类型，<code>triangles</code>表明输入的图元是三角形，而<code>triangle_strip</code>表明输出的图元也是三角形，而且是三角形带。<em>这里补充一下对三角形带的说明，三角形顾名思义就是三角形组成的带状，其绘制方式可以这样理解，首先先绘制出一个三角形，然后再三角形外部再绘制一个顶点，然后以已经存在的三角形的一条边，再绘制出一个新的三角形，然后循环这个过程，最后便可以得到一个三角形带</em>。最后<code>max_vertices</code>则表示最多绘制的顶点数目，超过这个数目后openGL将不再进行绘制。<br />
+然后再看第一个输入块</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">in VS_OUT&#123;</span><br><span class="line">    vec2 Texcoord;</span><br><span class="line">    vec3 Normal;</span><br><span class="line">    vec3 Pos;</span><br><span class="line">&#125;gs_in[];</span><br></pre></td></tr></table></figure>
+<p>这是从顶点着色器输入的数据块，这里要注意的是几何着色器的输入都是数组，因为图元大多数都是一个以上的点组成的，并且即是图元就是点类型，还是需要以数组输入，只不过数组里面只有一个元素。</p>
+<p>主函数里面一共出现了三次<code>EmitVertex()</code>函数，这是将顶点数据继续发送给下一个着色器，不过我猜测这里的发送并不是直接就将这个顶点发送出去，而是先放在一个类似缓冲区的地方，然后等到调用<code>EndPrimitive()</code>才真正将顶点数据发送出去。最后将三角形的三个顶点都沿着其法线位移之后，几何着色器的任务也便完成了。<br />
+这就是最后渲染出来的效果<br />
+<img src="/images/broken_after.png" alt="" /><br />
+可以看到这种效果其实并不太像爆炸，或者说被炸成渣了，类似湮灭的效果。</p>
+<blockquote>
+<p>向量可视化</p>
+</blockquote>
+<p>向量可视化是几何着色器的另外一个应用，顾名思义，向量可视化就是让法向量可视，即染上一种颜色，效果就好像物体上长满了沿着法向量的毛一样。向量可视化的思路是这样的：首先先正常渲染出原物体，然后将<code>glDrawArrays()</code>的渲染图元改成<code>GL_POINTS</code>即点，然后利用几何着色器将每个点沿着法向量移动一小段距离，然后输出成一条线段，这样最后就可以呈现出可视化法向量的效果。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#version 330 core</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">layout</span>(points) in;</span><br><span class="line"><span class="built_in">layout</span>(line_strip,max_vertices=<span class="number">2</span>) out;</span><br><span class="line"></span><br><span class="line">in VS_OUT&#123;</span><br><span class="line"></span><br><span class="line">    vec2 Texcoord;</span><br><span class="line">    vec3 Normal;</span><br><span class="line">    vec3 Pos;</span><br><span class="line"></span><br><span class="line">&#125;gs_in[];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">uniform mat4 View;</span><br><span class="line">uniform mat4 Model;</span><br><span class="line">uniform mat4 Projection;</span><br><span class="line"></span><br><span class="line"><span class="function">vec3 <span class="title">getOffsetVec</span><span class="params">(vec3 position,vec3 normal)</span></span>&#123;</span><br><span class="line">    vec3 result;</span><br><span class="line">    <span class="type">float</span> magnitude=<span class="number">0.3f</span>;</span><br><span class="line">    normal=<span class="built_in">normalize</span>(normal);</span><br><span class="line">    result=position+normal*magnitude;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    gl_Position=Projection*View*<span class="built_in">vec4</span>(gs_in[<span class="number">0</span>].Pos,<span class="number">1.f</span>);</span><br><span class="line">    <span class="built_in">EmitVertex</span>();</span><br><span class="line"></span><br><span class="line">    vec3 offsetVec=<span class="built_in">getOffsetVec</span>(gs_in[<span class="number">0</span>].Pos,gs_in[<span class="number">0</span>].Normal);</span><br><span class="line">    gl_Position=Projection*View*<span class="built_in">vec4</span>(offsetVec,<span class="number">1.f</span>);</span><br><span class="line">    <span class="built_in">EmitVertex</span>();</span><br><span class="line"></span><br><span class="line">    <span class="built_in">EndPrimitive</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后渲染出来的效果就是这样的<br />
+<img src="/images/normalvision.png" alt="" /></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="Bailetian 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="Bailetian 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/OpenGL/" rel="tag"><i class="fa fa-tag"></i> OpenGL</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/01/12/%E9%AB%98%E7%BA%A7%E6%95%B0%E6%8D%AE%E9%AB%98%E7%BA%A7GLSL/" rel="prev" title="高级数据&高级GLSL">
+                  <i class="fa fa-angle-left"></i> 高级数据&高级GLSL
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2021 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">bailetian</span>
+  </div><span id="runtime_span"></span>
+<script type="text/javascript">function show_runtime(){window.setTimeout("show_runtime()",1000);X=new 
+    Date("12/31/2021 22:00:00");
+    Y=new Date();T=(Y.getTime()-X.getTime());M=24*60*60*1000;
+    a=T/M;A=Math.floor(a);b=(a-A)*24;B=Math.floor(b);c=(b-B)*60;C=Math.floor((b-B)*60);D=Math.floor((c-C)*60);
+    years = Math.floor(A / 365); 
+    A = A % 365; 
+    document.getElementById('runtime_span').innerHTML=`<i class="fa-solid fa-gear fa-spin"></i>&nbsp;<span>本站已经运行: </span >`+years+`<span > 年 </span>`+A+`<span > 天 </span>`+B+`<span> 小时 </span>`+C+`<span> 分 </span>`+D+`<span> 秒 </span>`}show_runtime();
+</script>
+
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/xiaowentao123" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" integrity="sha256-UF1fgpAiu3tPJN/uCqEUHNe7pnr+QR0SQDNfgglgtcM=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="/js/third-party/math/katex.js"></script>
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"xiaowentao123/xiaowentao123.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

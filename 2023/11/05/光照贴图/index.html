@@ -21,22 +21,30 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"www.geekbrohood.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"changyan","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta property="og:type" content="website">
-<meta property="og:title" content="白乐天的代码小站">
-<meta property="og:url" content="https://www.geekbrohood.cn/archives/index.html">
+    <meta name="description" content="调整材质的环境光、漫反射以及镜面反射系数已经可以模拟出多种多样的材质，但是如果我们还想模拟更复杂的材质例如模拟砖墙的材质就十分困难了。但好在我们之前已经知道了如何表示复杂物体的表面，当然就是用纹理了。 将纹理和光照模型结合，我们就可以得到更为真实的物体，而我们仅仅需要将材质中ambient和diffuse参数修改成纹理取样器sampler2D即可。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="光照贴图">
+<meta property="og:url" content="https://www.geekbrohood.cn/2023/11/05/%E5%85%89%E7%85%A7%E8%B4%B4%E5%9B%BE/index.html">
 <meta property="og:site_name" content="白乐天的代码小站">
+<meta property="og:description" content="调整材质的环境光、漫反射以及镜面反射系数已经可以模拟出多种多样的材质，但是如果我们还想模拟更复杂的材质例如模拟砖墙的材质就十分困难了。但好在我们之前已经知道了如何表示复杂物体的表面，当然就是用纹理了。 将纹理和光照模型结合，我们就可以得到更为真实的物体，而我们仅仅需要将材质中ambient和diffuse参数修改成纹理取样器sampler2D即可。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.geekbrohood.cn/images/container2_specular.png">
+<meta property="og:image" content="https://www.geekbrohood.cn/images/result-btka.png">
+<meta property="article:published_time" content="2023-11-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-11-04T16:00:00.000Z">
 <meta property="article:author" content="Bailetian">
+<meta property="article:tag" content="OpenGL">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.geekbrohood.cn/images/container2_specular.png">
 
 
-<link rel="canonical" href="https://www.geekbrohood.cn/archives/">
+<link rel="canonical" href="https://www.geekbrohood.cn/2023/11/05/%E5%85%89%E7%85%A7%E8%B4%B4%E5%9B%BE/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"archives/index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.geekbrohood.cn/2023/11/05/%E5%85%89%E7%85%A7%E8%B4%B4%E5%9B%BE/","path":"2023/11/05/光照贴图/","title":"光照贴图"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>归档 | 白乐天的代码小站</title>
+<title>光照贴图 | 白乐天的代码小站</title>
   
 
 
@@ -69,7 +77,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">白乐天的代码小站</h1>
+      <p class="site-title">白乐天的代码小站</p>
       <i class="logo-line"></i>
     </a>
   </div>
@@ -206,213 +214,129 @@
 
     </div>
 
-    <div class="main-inner archive posts-collapse">
+    <div class="main-inner post posts-expand">
 
 
   
+
+
+<div class="post-block">
   
   
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <span class="collection-header">嗯..! 目前共计 9 篇日志。 继续努力。</span>
-      </div>
 
-      
-    <div class="collection-year">
-      <span class="collection-header">2024<span class="collection-year-count">3</span></span>
-    </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.geekbrohood.cn/2023/11/05/%E5%85%89%E7%85%A7%E8%B4%B4%E5%9B%BE/">
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-01-29T00:00:00+08:00"
-              content="2024-01-29">
-          01-29
-        </time>
-      </div>
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Avatar.jpg">
+      <meta itemprop="name" content="Bailetian">
+    </span>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/01/29/%E5%87%A0%E4%BD%95%E7%9D%80%E8%89%B2%E5%99%A8/" itemprop="url">
-            <span itemprop="name">几何着色器</span>
-          </a>
-      </div>
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="白乐天的代码小站">
+      <meta itemprop="description" content="">
+    </span>
 
-      
-    </header>
-  </article>
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="光照贴图 | 白乐天的代码小站">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          光照贴图
+        </h1>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-01-12T00:00:00+08:00"
-              content="2024-01-12">
-          01-12
-        </time>
-      </div>
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/01/12/%E9%AB%98%E7%BA%A7%E6%95%B0%E6%8D%AE%E9%AB%98%E7%BA%A7GLSL/" itemprop="url">
-            <span itemprop="name">高级数据&高级GLSL</span>
-          </a>
-      </div>
+      <time title="创建时间：2023-11-05 00:00:00" itemprop="dateCreated datePublished" datetime="2023-11-05T00:00:00+08:00">2023-11-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
+        </span>
+    </span>
 
-      
-    </header>
-  </article>
+  
+</div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-01-01T00:00:00+08:00"
-              content="2024-01-01">
-          01-01
-        </time>
-      </div>
+        </div>
+      </header>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/01/01/2023%E6%96%B0%E5%B9%B4%E6%80%BB%E7%BB%93/" itemprop="url">
-            <span itemprop="name">2023新年总结</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-    <div class="collection-year">
-      <span class="collection-header">2023<span class="collection-year-count">6</span></span>
-    </div>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2023-12-28T00:00:00+08:00"
-              content="2023-12-28">
-          12-28
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2023/12/28/%E7%AB%8B%E6%96%B9%E4%BD%93%E8%B4%B4%E5%9B%BE/" itemprop="url">
-            <span itemprop="name">立方体贴图</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2023-12-18T00:00:00+08:00"
-              content="2023-12-18">
-          12-18
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2023/12/18/%E5%B8%A7%E7%BC%93%E5%86%B2/" itemprop="url">
-            <span itemprop="name">帧缓冲</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2023-12-13T00:00:00+08:00"
-              content="2023-12-13">
-          12-13
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2023/12/13/%E6%B7%B7%E5%90%88%E9%9D%A2%E5%89%94%E9%99%A4/" itemprop="url">
-            <span itemprop="name">混合面剔除</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2023-11-13T00:00:00+08:00"
-              content="2023-11-13">
-          11-13
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2023/11/13/%E6%A8%A1%E6%9D%BF%E6%B5%8B%E8%AF%95/" itemprop="url">
-            <span itemprop="name">模板测试</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2023-11-05T00:00:00+08:00"
-              content="2023-11-05">
-          11-05
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2023/11/05/%E4%B8%8D%E5%90%8C%E7%9A%84%E5%85%89%E7%85%A7/" itemprop="url">
-            <span itemprop="name">不同的光照</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2023-11-05T00:00:00+08:00"
-              content="2023-11-05">
-          11-05
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2023/11/05/%E5%85%89%E7%85%A7%E8%B4%B4%E5%9B%BE/" itemprop="url">
-            <span itemprop="name">光照贴图</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>调整材质的环境光、漫反射以及镜面反射系数已经可以模拟出多种多样的材质，但是如果我们还想模拟更复杂的材质例如模拟砖墙的材质就十分困难了。但好在我们之前已经知道了如何表示复杂物体的表面，当然就是用纹理了。</p>
+<p>将纹理和光照模型结合，我们就可以得到更为真实的物体，而我们仅仅需要将材质中<code>ambient</code>和<code>diffuse</code>参数修改成纹理取样器<code>sampler2D</code>即可。</p>
+<span id="more"></span>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Material</span>&#123;</span><br><span class="line"></span><br><span class="line">    sampler2D diffuse;</span><br><span class="line">    sampler2D specular;</span><br><span class="line">    <span class="type">float</span> shininess;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">uniform Material material;</span><br></pre></td></tr></table></figure>
+<p>这里对<code>Material</code>赋值需要一点考究。由于GLSL中没有对自定义结构赋值的函数，所以对于一个结构体而言，需要我们逐条对其成员复制，例如赋值<code>diffuse</code>就需要这样<code>glUniform1i(glGetUniformLocation(ID,'material.diffuse'),value);</code>即直接按整数成员进行赋值。</p>
+<p>然而设置完环境光和漫反射后会发现有些地方不该出现高光也出现了，例如像木头这种材质我们是不希望它出现高光的，这时候就需要镜面反射贴图了。和漫反射贴图不同的是，镜面反射贴图一般只有两种颜色，即黑和白，在需要出现高光的地方点缀白色，在不需要的地方涂黑，这样就可以把不需要高光的地方过滤掉。<br />
+<img src="/images/container2_specular.png" alt="" /><br><br />
+将漫反射和镜面反射贴图相结合，我们就可以得到一个比较真实的物体了。用法也很简单，只要在原来材质的基础上，将<code>ambient</code>、<code>diffuse</code>和<code>specular</code>统统替换成texture的颜色，本质上来说，也是一种颜色，只不过现在这个颜色不需要我们自己定义，而是直接利用纹理进行插值了。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">vec3 ambientLight=light.ambient*<span class="built_in">texture</span>(material.diffuse,Texcoord).rgb;</span><br><span class="line">vec3 ligtDir=<span class="built_in">normalize</span>(light.position-Pos);</span><br><span class="line">vec3 norm=<span class="built_in">normalize</span>(Normal);</span><br><span class="line"><span class="type">float</span> diffuse=<span class="built_in">max</span>(<span class="built_in">dot</span>(ligtDir,norm),<span class="number">0.f</span>);</span><br><span class="line">vec3 diffuseLight=light.diffuse*diffuse*<span class="built_in">texture</span>(material.diffuse,Texcoord).rgb;</span><br><span class="line">vec3 reflectLigt=<span class="built_in">normalize</span>(<span class="built_in">reflect</span>(-ligtDir,norm));</span><br><span class="line">vec3 viewDir=<span class="built_in">normalize</span>(ViewPos-Pos);</span><br><span class="line"><span class="type">float</span> specular=<span class="built_in">pow</span>(<span class="built_in">max</span>(<span class="built_in">dot</span>(viewDir,reflectLigt),<span class="number">0.f</span>),material.shininess);</span><br><span class="line">vec3 specularLight=light.specular*specular*<span class="built_in">texture</span>(material.specular,Texcoord).rgb;</span><br><span class="line">FragColor=<span class="built_in">vec4</span>(ambientLight+diffuseLight+specularLight,<span class="number">1.f</span>);</span><br></pre></td></tr></table></figure>
+<p>最后得到的效果将是这样，还是很有质感的。<br />
+<img src="/images/result-btka.png" alt="result-btka.png" /></p>
 
     </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="Bailetian 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="Bailetian 支付宝">
+        <span>支付宝</span>
+      </div>
+
   </div>
-  
-  
-  
+</div>
 
+          <div class="post-tags">
+              <a href="/tags/OpenGL/" rel="tag"><i class="fa fa-tag"></i> OpenGL</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/11/05/%E4%B8%8D%E5%90%8C%E7%9A%84%E5%85%89%E7%85%A7/" rel="next" title="不同的光照">
+                  不同的光照 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
 </div>
   </main>
 

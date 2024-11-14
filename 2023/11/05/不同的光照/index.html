@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-flat-top.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.geekbrohood.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"changyan","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="在光照这一节中，我们简单的介绍了光照。但是实际上光还可以有多种形态，我们只要对其进行简单的数学操作，就可以得到不同的效果。  平行光  何谓平行光，其实就是光线的方向不会改变。例如太阳光，在同一时刻如果我们在地面插上两根等长的棍子，我们会发现棍子的影子应当是同等长度的。所以当我们要模拟平行光时，我们便只要将lightDir修改为一个定值即可，即不需要再根据像素位置和光源位置来计算了。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="不同的光照">
+<meta property="og:url" content="https://www.geekbrohood.cn/2023/11/05/%E4%B8%8D%E5%90%8C%E7%9A%84%E5%85%89%E7%85%A7/index.html">
+<meta property="og:site_name" content="白乐天的代码小站">
+<meta property="og:description" content="在光照这一节中，我们简单的介绍了光照。但是实际上光还可以有多种形态，我们只要对其进行简单的数学操作，就可以得到不同的效果。  平行光  何谓平行光，其实就是光线的方向不会改变。例如太阳光，在同一时刻如果我们在地面插上两根等长的棍子，我们会发现棍子的影子应当是同等长度的。所以当我们要模拟平行光时，我们便只要将lightDir修改为一个定值即可，即不需要再根据像素位置和光源位置来计算了。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.geekbrohood.cn/images/torch_result.png">
+<meta property="article:published_time" content="2023-11-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-11-04T16:00:00.000Z">
+<meta property="article:author" content="Bailetian">
+<meta property="article:tag" content="OpenGL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.geekbrohood.cn/images/torch_result.png">
+
+
+<link rel="canonical" href="https://www.geekbrohood.cn/2023/11/05/%E4%B8%8D%E5%90%8C%E7%9A%84%E5%85%89%E7%85%A7/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.geekbrohood.cn/2023/11/05/%E4%B8%8D%E5%90%8C%E7%9A%84%E5%85%89%E7%85%A7/","path":"2023/11/05/不同的光照/","title":"不同的光照"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>不同的光照 | 白乐天的代码小站</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">白乐天的代码小站</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Bailetian"
+      src="/images/Avatar.jpg">
+  <p class="site-author-name" itemprop="name">Bailetian</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaowentao123" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xiaowentao123" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:921036503@qq.com" title="E-Mail → mailto:921036503@qq.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/35335054" title="BiliBili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;35335054" rel="noopener me" target="_blank"><i class="fa-brands fa-bilibili fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://leetcode.cn/u/luo-sheng-tang-fu" title="Leetcode → https:&#x2F;&#x2F;leetcode.cn&#x2F;u&#x2F;luo-sheng-tang-fu" rel="noopener me" target="_blank"><i class="fa-solid fa-code fa-fw"></i></a>
+      </span>
+  </div>
+<div id="time-progress">
+        <p id="year-progress"></p>
+        <div class="progress-bar" id="year-progress-bar"></div>
+        <p id="month-progress"></p>
+        <div class="progress-bar" id="month-progress-bar"></div>
+        <p id="day-progress"></p>
+        <div class="progress-bar" id="day-progress-bar"></div>
+</div>
+<script src="/js/time-progress.js"></script>
+<style>
+#time-progress {
+    padding: 10px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+
+}
+
+.progress-bar {
+    height: 10px;
+    background-color: #4caf50;
+    border-radius: 5px;
+    margin: 5px 0;
+    width: 0;
+}
+
+#year-progress,#month-progress,#day-progress{
+    margin: 5px 0;
+    font-size: 14px;
+    color:black;
+    font-weight:bold;
+}
+</style>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa-solid fa-link fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://skyleaf.cn/" title="https:&#x2F;&#x2F;skyleaf.cn&#x2F;" rel="noopener" target="_blank">yesky的博客</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.geekbrohood.cn/2023/11/05/%E4%B8%8D%E5%90%8C%E7%9A%84%E5%85%89%E7%85%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Avatar.jpg">
+      <meta itemprop="name" content="Bailetian">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="白乐天的代码小站">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="不同的光照 | 白乐天的代码小站">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          不同的光照
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-11-05 00:00:00" itemprop="dateCreated datePublished" datetime="2023-11-05T00:00:00+08:00">2023-11-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>在光照这一节中，我们简单的介绍了光照。但是实际上光还可以有多种形态，我们只要对其进行简单的数学操作，就可以得到不同的效果。</p>
+<blockquote>
+<p>平行光</p>
+</blockquote>
+<p>何谓平行光，其实就是光线的方向不会改变。例如太阳光，在同一时刻如果我们在地面插上两根等长的棍子，我们会发现棍子的影子应当是同等长度的。所以当我们要模拟平行光时，我们便只要将<code>lightDir</code>修改为一个定值即可，即不需要再根据像素位置和光源位置来计算了。</p>
+<span id="more"></span>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Light_parallel</span>&#123;</span><br><span class="line">    vec3 direction;</span><br><span class="line">    vec3 ambient;</span><br><span class="line">    vec3 diffuse;</span><br><span class="line">    vec3 specular;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>计算的时候直接利用<code>direction</code>来计算即可。</p>
+<blockquote>
+<p>点光源（Plus）</p>
+</blockquote>
+<p>在之前我们已经模拟了点光源了，但是那个点光源其实还是有一点bug，就是它的照射范围是无穷的，即无论离多远都会被点光源照亮。但实际上这是不可能的，虽然光可以传播无穷远，但是其会在传播的路径上不断地被损耗，所以光强实际上会随着距离的变大而逐渐变小。所以这就需要我们用一种函数来模拟光强的这种性质，但好在这仍然十分的简单：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mrow><mi>a</mi><mi>t</mi><mi>t</mi></mrow></msub><mo>=</mo><mfrac><mn>1.0</mn><mrow><msub><mi>K</mi><mi>c</mi></msub><mo>+</mo><msub><mi>K</mi><mi>l</mi></msub><mo>∗</mo><mi>d</mi><mo>+</mo><msub><mi>K</mi><mi>q</mi></msub><mo>∗</mo><msup><mi>d</mi><mn>2</mn></msup></mrow></mfrac></mrow><annotation encoding="application/x-tex">F_{att}=\frac{1.0}{K_c+K_l*d+K_q*d^2}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.3874279999999999em;vertical-align:-0.5423199999999999em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.845108em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.16454285714285719em;"><span style="top:-2.357em;margin-left:-0.07153em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span><span class="mbin mtight">+</span><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3487714285714287em;margin-left:-0.07153em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15122857142857138em;"><span></span></span></span></span></span></span><span class="mbin mtight">∗</span><span class="mord mathnormal mtight">d</span><span class="mbin mtight">+</span><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.16454285714285716em;"><span style="top:-2.357em;margin-left:-0.07153em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">q</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2818857142857143em;"><span></span></span></span></span></span></span><span class="mbin mtight">∗</span><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7463142857142857em;"><span style="top:-2.786em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mord mtight">.</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.5423199999999999em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span>，这个公式中<code>d</code>代表了光的传播距离，而二次项、一次项、常数项系数分别决定着强度衰减的速度。这里已经提前测好了传播距离和kc、kl和kq的关系。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">距离</th>
+<th style="text-align:center">常数项</th>
+<th style="text-align:center">一次项</th>
+<th style="text-align:center">二次项</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0.7</td>
+<td style="text-align:center">1.8</td>
+</tr>
+<tr>
+<td style="text-align:center">13</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0.35</td>
+<td style="text-align:center">0.44</td>
+</tr>
+<tr>
+<td style="text-align:center">20</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0.22</td>
+<td style="text-align:center">0.2</td>
+</tr>
+<tr>
+<td style="text-align:center">32</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0.14</td>
+<td style="text-align:center">0.07</td>
+</tr>
+<tr>
+<td style="text-align:center">50</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0.09</td>
+<td style="text-align:center">0.032</td>
+</tr>
+<tr>
+<td style="text-align:center">65</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0.07</td>
+<td style="text-align:center">0.017</td>
+</tr>
+<tr>
+<td style="text-align:center">100</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0.045</td>
+<td style="text-align:center">0.0075</td>
+</tr>
+</tbody>
+</table>
+<p>而我们最后也只要在计算最后乘以光照强度即可，这样就可以让光的传播距离控制在一个范围里面。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> k=<span class="number">1.0</span>/(distance*distance*torch.quadratic+distance*torch.linear+torch.constant);</span><br><span class="line">FragColor=<span class="built_in">vec4</span>((ambientLight+diffuseLight+specularLight)*k,<span class="number">1.f</span>)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>手电筒</p>
+</blockquote>
+<p>要想实现一个类似手电筒的光照效果，我们则需要将光聚拢在一个光锥里面，怎么样使得光形成这种形状呢？我们知道要控制圆锥张开的大小，其实只要控制母线和垂线的夹角即可，所以当光线和光源方向大于我们设定的这个值的时候，即可判断这束光在圆锥外面，所以不用渲染，而当这个角度小于我们设定的值的时候，光束就会在里面。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Light_torch</span>&#123;</span><br><span class="line">    vec3 position;</span><br><span class="line">    vec3 direction;</span><br><span class="line">    <span class="type">float</span> cutOff;</span><br><span class="line">    <span class="type">float</span> outerCutOff;</span><br><span class="line"></span><br><span class="line">    vec3 ambient;</span><br><span class="line">    vec3 diffuse;</span><br><span class="line">    vec3 specular;</span><br><span class="line"></span><br><span class="line">    <span class="type">float</span> constant;</span><br><span class="line">    <span class="type">float</span> linear;</span><br><span class="line">    <span class="type">float</span> quadratic;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>这里我们通常将阈值设定成角度的余弦，因为如果是设成角度的话，我们计算出光线和光源方向之间夹角的余弦后还要对余弦求反余弦，但是反余弦是很消耗算力的，所以我们直接将阈值设定成余弦值即可。</p>
+<p>但是这里仍然有一个问题，就是明暗交接将会变得十分锐利，这很有违和感，我们希望明暗之间有一个缓冲区，可以逐渐由明转暗，这样我们就需要在光锥外面再套上一个光锥，作为我们的外圈层。这样在内圈和外圈之间的光线就可以在（0，1）直接坐线性插值，达到一个逐渐变化的效果。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> theta=<span class="built_in">dot</span>(ligtDir,<span class="built_in">normalize</span>(-torch.direction));</span><br><span class="line"><span class="type">float</span> epsilon=torch.cutOff-torch.outerCutOff;</span><br><span class="line"><span class="type">float</span> intensity=<span class="built_in">clamp</span>((theta-torch.outerCutOff)/epsilon,<span class="number">0.f</span>,<span class="number">1.f</span>);</span><br></pre></td></tr></table></figure>
+<p>当然手电筒通常都是跟随玩家移动的，也就是说我们通常会将手电筒光源的位置放在相机的位置，并且还要随着相机移动和旋转，所以这也就意味着光源的<code>postion</code>和<code>direction</code>要和摄影机保持一直。这样我们就可以做出比较真实的手电筒光效了，这十分像恐怖片中的常见，所以也广泛运用于恐怖游戏中。<br />
+<img src="/images/torch_result.png" alt="" /></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="Bailetian 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="Bailetian 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/OpenGL/" rel="tag"><i class="fa fa-tag"></i> OpenGL</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/11/05/%E5%85%89%E7%85%A7%E8%B4%B4%E5%9B%BE/" rel="prev" title="光照贴图">
+                  <i class="fa fa-angle-left"></i> 光照贴图
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/11/13/%E6%A8%A1%E6%9D%BF%E6%B5%8B%E8%AF%95/" rel="next" title="模板测试">
+                  模板测试 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2021 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">bailetian</span>
+  </div><span id="runtime_span"></span>
+<script type="text/javascript">function show_runtime(){window.setTimeout("show_runtime()",1000);X=new 
+    Date("12/31/2021 22:00:00");
+    Y=new Date();T=(Y.getTime()-X.getTime());M=24*60*60*1000;
+    a=T/M;A=Math.floor(a);b=(a-A)*24;B=Math.floor(b);c=(b-B)*60;C=Math.floor((b-B)*60);D=Math.floor((c-C)*60);
+    years = Math.floor(A / 365); 
+    A = A % 365; 
+    document.getElementById('runtime_span').innerHTML=`<i class="fa-solid fa-gear fa-spin"></i>&nbsp;<span>本站已经运行: </span >`+years+`<span > 年 </span>`+A+`<span > 天 </span>`+B+`<span> 小时 </span>`+C+`<span> 分 </span>`+D+`<span> 秒 </span>`}show_runtime();
+</script>
+
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/xiaowentao123" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" integrity="sha256-UF1fgpAiu3tPJN/uCqEUHNe7pnr+QR0SQDNfgglgtcM=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="/js/third-party/math/katex.js"></script>
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"xiaowentao123/xiaowentao123.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>
