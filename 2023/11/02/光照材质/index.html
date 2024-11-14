@@ -21,29 +21,32 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"www.geekbrohood.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"changyan","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="到目前为止，我们已经掌握了很多缓冲，比如用来储存顶点的GL_ARRAY_BUFFER，用来储存顶点索引的GL_ELEMENT_ARRAY_BUFFER以及储存颜色的颜色缓冲，储存深度信息的深度缓冲等等，这些诸多缓冲其实就是构成每一帧画面的诸多要素，所以故而便存在一个储存这些所有缓冲的缓冲，便是帧缓冲。 和其他缓冲一样，帧缓冲的创建也是先创建，然后再绑定。glGenFramebuffers用来创建一">
+    <meta name="description" content="什么是颜色  在搞清楚什么是光照之前，我们应该线弄清楚什么是颜色。人之所以可以看见颜色是因为这种波段的光进入了人眼，而实际上物体的颜色和光的颜色恰好是互补的，例如一个蓝色的物体恰恰是因为他吸收了除了蓝色以外的所有波段的光，从而使得蓝光反射进入到了人眼。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="帧缓冲">
-<meta property="og:url" content="https://www.geekbrohood.cn/2023/12/18/%E5%B8%A7%E7%BC%93%E5%86%B2/index.html">
+<meta property="og:title" content="光照&amp;材质">
+<meta property="og:url" content="https://www.geekbrohood.cn/2023/11/02/%E5%85%89%E7%85%A7%E6%9D%90%E8%B4%A8/index.html">
 <meta property="og:site_name" content="白乐天的代码小站">
-<meta property="og:description" content="到目前为止，我们已经掌握了很多缓冲，比如用来储存顶点的GL_ARRAY_BUFFER，用来储存顶点索引的GL_ELEMENT_ARRAY_BUFFER以及储存颜色的颜色缓冲，储存深度信息的深度缓冲等等，这些诸多缓冲其实就是构成每一帧画面的诸多要素，所以故而便存在一个储存这些所有缓冲的缓冲，便是帧缓冲。 和其他缓冲一样，帧缓冲的创建也是先创建，然后再绑定。glGenFramebuffers用来创建一">
+<meta property="og:description" content="什么是颜色  在搞清楚什么是光照之前，我们应该线弄清楚什么是颜色。人之所以可以看见颜色是因为这种波段的光进入了人眼，而实际上物体的颜色和光的颜色恰好是互补的，例如一个蓝色的物体恰恰是因为他吸收了除了蓝色以外的所有波段的光，从而使得蓝光反射进入到了人眼。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://www.geekbrohood.cn/images/output-wscu.png">
-<meta property="article:published_time" content="2023-12-17T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-12-17T16:00:00.000Z">
+<meta property="og:image" content="https://www.geekbrohood.cn/images/result.png">
+<meta property="og:image" content="https://www.geekbrohood.cn/images/chrome.png">
+<meta property="og:image" content="https://www.geekbrohood.cn/images/gold.png">
+<meta property="og:image" content="https://www.geekbrohood.cn/images/pearl.png">
+<meta property="article:published_time" content="2023-11-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-11-01T16:00:00.000Z">
 <meta property="article:author" content="Bailetian">
 <meta property="article:tag" content="OpenGL">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://www.geekbrohood.cn/images/output-wscu.png">
+<meta name="twitter:image" content="https://www.geekbrohood.cn/images/result.png">
 
 
-<link rel="canonical" href="https://www.geekbrohood.cn/2023/12/18/%E5%B8%A7%E7%BC%93%E5%86%B2/">
+<link rel="canonical" href="https://www.geekbrohood.cn/2023/11/02/%E5%85%89%E7%85%A7%E6%9D%90%E8%B4%A8/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.geekbrohood.cn/2023/12/18/%E5%B8%A7%E7%BC%93%E5%86%B2/","path":"2023/12/18/帧缓冲/","title":"帧缓冲"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.geekbrohood.cn/2023/11/02/%E5%85%89%E7%85%A7%E6%9D%90%E8%B4%A8/","path":"2023/11/02/光照材质/","title":"光照&材质"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>帧缓冲 | 白乐天的代码小站</title>
+<title>光照&材质 | 白乐天的代码小站</title>
   
 
 
@@ -215,17 +218,10 @@
   </div>
   <ul class="popular-posts">
     <li class="popular-posts-item">
-      <a class="popular-posts-link" href="/2023/10/29/%E7%BA%B9%E7%90%86/" rel="bookmark">
-        <time class="popular-posts-time">2023-10-29</time>
+      <a class="popular-posts-link" href="/2023/11/05/%E5%85%89%E7%85%A7%E8%B4%B4%E5%9B%BE/" rel="bookmark">
+        <time class="popular-posts-time">2023-11-05</time>
         <br>
-      纹理
-      </a>
-    </li>
-    <li class="popular-posts-item">
-      <a class="popular-posts-link" href="/2023/12/28/%E7%AB%8B%E6%96%B9%E4%BD%93%E8%B4%B4%E5%9B%BE/" rel="bookmark">
-        <time class="popular-posts-time">2023-12-28</time>
-        <br>
-      立方体贴图
+      光照贴图
       </a>
     </li>
   </ul>
@@ -248,7 +244,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.geekbrohood.cn/2023/12/18/%E5%B8%A7%E7%BC%93%E5%86%B2/">
+    <link itemprop="mainEntityOfPage" href="https://www.geekbrohood.cn/2023/11/02/%E5%85%89%E7%85%A7%E6%9D%90%E8%B4%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/Avatar.jpg">
@@ -261,12 +257,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="帧缓冲 | 白乐天的代码小站">
+      <meta itemprop="name" content="光照&材质 | 白乐天的代码小站">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          帧缓冲
+          光照&材质
         </h1>
 
         <div class="post-meta-container">
@@ -277,7 +273,7 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2023-12-18 00:00:00" itemprop="dateCreated datePublished" datetime="2023-12-18T00:00:00+08:00">2023-12-18</time>
+      <time title="创建时间：2023-11-02 00:00:00" itemprop="dateCreated datePublished" datetime="2023-11-02T00:00:00+08:00">2023-11-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -298,47 +294,48 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><p>到目前为止，我们已经掌握了很多缓冲，比如用来储存顶点的<code>GL_ARRAY_BUFFER</code>，用来储存顶点索引的<code>GL_ELEMENT_ARRAY_BUFFER</code>以及储存颜色的颜色缓冲，储存深度信息的深度缓冲等等，这些诸多缓冲其实就是构成每一帧画面的诸多要素，所以故而便存在一个储存这些所有缓冲的缓冲，便是帧缓冲。</p>
-<p>和其他缓冲一样，帧缓冲的创建也是先创建，然后再绑定。<code>glGenFramebuffers</code>用来创建一个帧缓冲，再将帧缓冲用<code>glBindFramebuffer</code>绑定到<code>GL_FRAMEBUFFER</code>之后，便可以开始对其进行修改。刚创建好的帧缓冲其实是不完整的，一个完整的帧缓冲需要满足以下的条件：  <span id="more"></span></p>
-<ul>
-<li>附加至少一个缓冲（颜色、深度或模板缓冲）</li>
-<li>至少有一个颜色缓冲附件(color-attachment)</li>
-<li>所有的附件都必须是完整的（保留了内存）</li>
-<li>每个缓冲都应该有相同的样本数。</li>
-</ul>
-<blockquote>
-<p>附件</p>
+    <div class="post-body" itemprop="articleBody"><blockquote>
+<p>什么是颜色</p>
 </blockquote>
-<p>附件其实可以理解为一段内存，也即是在计算机内存中真实的内存空间，一个帧缓冲只有拥有附件的时候才是有效的。附件也分为纹理附件和缓冲对象附件。</p>
-<ol>
-<li>纹理附件</li>
-</ol>
-<p>纹理附件顾名思义，就是利用纹理的格式作为帧缓冲的内存，它可以将帧缓冲里面储存的东西以纹理的形式保存下来，这样使用起来也可以按照纹理的格式去使用。首先需要创建一个空的纹理，我们之前创建的纹理都是先用<code>stbi_image</code>导入图像后再将图像导入进纹理，但是这里由于我们事先没有纹理数据，所以只能创建一个空的纹理<code>glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,widht,height,GL_RGB,GL_UNSIGNED_BYTE,NULL)</code>。创建完成后再设置纹理必要参数，例如环绕模式，纹理过滤器，多级渐远纹理等等。之后我们就可以将纹理绑定在我们创建好的<code>framebuffer</code>上了，<code>glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,texture,0)</code></p>
-<ul>
-<li>target：帧缓冲的目标（一般都是GL_FRAMEBUFFER）</li>
-<li>attachment：我们想要附加的附件类型，颜色附件就是GL_COLOR_ATTACHMENTN,注意这里的N表示附加很多个颜色纹理附件，就和纹理中的GL_TEXUTURE0（1，2，3…）一样，可以有很多个。</li>
-<li>textarget：希望附加的纹理类型，一般都是2D纹理，所以就是GL_TEXTURE_2D。</li>
-<li>texuture：要附加的纹理本身。</li>
-<li>level：多级渐远纹理级别，这里设置为最近一级也即是0即可。</li>
-</ul>
-<p>当然除了颜色可以用纹理的格式存储外，深度和模板都是可以的，如果要存储深度，那么纹理格式和内部格式就要改成<code>GL_DEPTH_COMPONENT</code>，并且绑定时的附件类型就要变成<code>GL_DEPTH_ATTACHMENT</code>；如果要存储模板缓冲，那么纹理格式就要改成<code>GL_STENCIL_INDEX</code>绑定时附件类型改为<code>GL_STENCIL_ATTACHMENT</code>。同时深度与模板可以合并一个纹理附加到帧缓冲中，纹理格式为<code>GL_DEPTH24_STENCIL8</code>，格式的含义是用24位来存储深度信息，用8位来存储模板信息。同时附件类型变为<code>GL_DEPTH_STENCIL_ATTACHMENT</code>。</p>
-<ol start="2">
-<li>渲染缓冲对象附件(Renderbuffer Object)</li>
-</ol>
-<p>在引入渲染缓冲对象之前，纹理是唯一可用的附件，所以所有的信息都需要转换位纹理再使用。但是纹理并不是针对帧缓冲设计的，所以转换起来需要耗费一定时间。所以渲染缓冲便是针对帧缓冲而设计的。渲染缓冲直接将所有的渲染数据存储到它里面，所以它可以很快速的被写入或者复制到其他缓冲中去，所以像交换缓冲(即每次最后进行的<code>glfwSwapBuffers</code>)便可以用渲染缓冲对象实现。但是渲染缓冲对象是只写的，所以一般用于只需要写操作的缓冲，例如深度缓存和模板缓存。</p>
-<p>渲染缓冲对象用<code>glGenRenderbuffers</code>创建，然后<code>glBindRenderbuffer</code>之后，便可以创建它真正的缓冲，即内存中的位置<code>glRenderbufferStorage(GL_RENDERBUFFER,GL_DEPTH24_STENCIL8,width,height)</code>，最后也是用<code>glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DPETH_STENCIL_ATTACHMENT,GL_RENDERBUFFER,rbo)</code>来将渲染缓冲对象绑定到帧缓冲上面，这里注意到第三个参数变为了<code>GL_RENDERBUFFER</code>，这表明附件是使用渲染缓冲作为存储的（其实从函数名已经可以看出来了）。</p>
+<p>在搞清楚什么是光照之前，我们应该线弄清楚什么是颜色。人之所以可以看见颜色是因为这种波段的光进入了人眼，而实际上物体的颜色和光的颜色恰好是互补的，例如一个蓝色的物体恰恰是因为他吸收了除了蓝色以外的所有波段的光，从而使得蓝光反射进入到了人眼。</p>
+<span id="more"></span>
 <blockquote>
-<p>开始渲染</p>
+<p>什么是光照</p>
 </blockquote>
-<p>有了缓冲附件，那么我们的帧缓冲就已经完整了，当然在使用前还可以用<code>glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE</code>来检查帧缓冲是否完整。首先我们要先创建一个帧缓冲：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">int</span> FBO;</span><br><span class="line"><span class="built_in">glGenFramebuffers</span>(<span class="number">1</span>,&amp;FBO);</span><br></pre></td></tr></table></figure>
-<p>之后就可以开始补充附件了，我们先创建颜色缓冲所需单独附件，这里我们选择纹理附件，因为写入纹理之后我们还需要将纹理渲染到其他图形上去。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">int</span> texture_pic;</span><br><span class="line"><span class="built_in">glGenTextures</span>(<span class="number">1</span>,&amp;texture_pic);</span><br><span class="line"><span class="built_in">glBindTexture</span>(GL_TEXTURE_2D,texture_pic);</span><br><span class="line"><span class="built_in">glTexImage2D</span>(GL_TEXTURE_2D,<span class="number">0</span>,GL_RGB,<span class="number">1200</span>,<span class="number">1200</span>,<span class="number">0</span>,GL_RGB,GL_UNSIGNED_BYTE,<span class="literal">NULL</span>);</span><br><span class="line"><span class="built_in">glTexParameteri</span>(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);</span><br><span class="line"><span class="built_in">glTexParameteri</span>(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);</span><br><span class="line"><span class="built_in">glBindTexture</span>(GL_TEXTURE_2D,<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
-<p>这里我们选择1200X1200的纹理尺寸，然后只设置纹理过滤，纹理环绕没有设置。之后便要设置深度缓冲和模板缓冲了，由于深度缓冲和模板缓冲我们不需要再使用，只要openGL自动进行模板测试和深度测试就可以了，所以我们选择缓冲对象附件。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">int</span> RBO;</span><br><span class="line"><span class="built_in">glGenRenderbuffers</span>(<span class="number">1</span>,&amp;RBO);</span><br><span class="line"><span class="built_in">glBindRenderbuffer</span>(GL_RENDERBUFFER,RBO);</span><br><span class="line"><span class="built_in">glRenderbufferStorage</span>(GL_RENDERBUFFER,GL_DEPTH24_STENCIL8,<span class="number">1200</span>,<span class="number">1200</span>);</span><br><span class="line"><span class="built_in">glBindRenderbuffer</span>(GL_RENDERBUFFER,<span class="number">0</span>);</span><br><span class="line">~~~~</span><br><span class="line">这里设置的缓冲对象大小也是<span class="number">1200</span>X1200和颜色缓冲对应，之后我们只需要将纹理附件和缓冲对象附件一并绑定到帧缓冲即可，最后还可以检查帧缓冲是否完整。</span><br><span class="line">~~~C++</span><br><span class="line"><span class="built_in">glBindFramebuffer</span>(GL_FRAMEBUFFER,FBO);</span><br><span class="line"><span class="built_in">glFramebufferTexture2D</span>(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,texture_pic,<span class="number">0</span>);</span><br><span class="line"><span class="built_in">glFramebufferRenderbuffer</span>(GL_FRAMEBUFFER,GL_DEPTH_STENCIL_ATTACHMENT,GL_RENDERBUFFER,RBO);</span><br><span class="line"><span class="keyword">if</span>(<span class="built_in">glCheckFramebufferStatus</span>(GL_FRAMEBUFFER)!=GL_FRAMEBUFFER_COMPLETE)&#123;</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;FrameBuffer is not complete!&quot;</span>&lt;&lt;endl;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">glBindFramebuffer</span>(GL_FRAMEBUFFER,<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
-<p>之后的阶段其实和之前渲染是完全一样的，只不过由于绑定了新的帧缓冲，所以渲染的最终结果不会显示到屏幕上而是被储存到了帧缓冲里面，所以这也叫离屏缓冲。这里还需要注意的是，在开始渲染之前还需要使用<code>glViewport(0,0,1200,1200)</code>来调整视口变换，因为我们这里的帧缓冲大小设置的是1200X1200，也就是相当于把屏幕画面放缩到了1200X1200，但是我们之前屏幕画面是800X600，所以如果不进行新的视口变化调整，渲染出来的画面会出问题。同样的，调整了视口变化，那么投影矩阵也要相对应进行调整<code>Projection=perspective(radians(45.f),1200*1.f/1200*1.f,0.1f,1000.f)</code>这样画面才不会被拉伸。<br />
-最后我们将离屏渲染出来的纹理绑定到一个矩形上，然后在默认的屏幕帧缓冲上渲染出这个矩形，那么将会看到这样的画面，就好像是投影在了一块屏幕上的感觉。<br />
-<img src="/images/output-wscu.png" alt="" /></p>
+<!-- 可以把光照简单理解为明暗强度，例如如果光照是1的话，那么物体就会显现本来的颜色，就会显得很亮，而如果光照是0.5的话那么物体就会比原来暗一半。我们将物体的每个像素都按照某个光照模型计算出它的颜色，那么物体就会显得很真实。 -->
+<p>之前我们之所以没有考虑光照，实际上是对光照做了一个简化，我们在片段着色器计算出像素点的颜色后便直接将其应用到了物体上，也就是说这个点反射了100%的光线。然后对于实际而言这是不可能的。现实的物理场景是十分复杂的，例如光打在物体上会反射，会形成阴影，还会形成高光等等，同时物体可能不止接受来自一个光源的光线，甚至不止接受光源的光线，可能还有其它物体的反射，来自环境本身的光等等。如果将这些条件都考虑进去，我们渲染出来的画面当然会无比接近真实，但是同样的算力要求也会大大提升。所以我们有必要从最简单的光照模型开始学习。</p>
+<blockquote>
+<p>Phong模型</p>
+</blockquote>
+<p>Phong模型是最简单的一种光照模型，可以将其简单拆分成三部分：环境光、漫反射光和镜面反射光。</p>
+<ul>
+<li>环境光：在日常生活中，物体不可能显示出绝对的黑色，也即是无论在什么条件都可以看清物体的一点轮廓，而勾勒出这个轮廓的光我们便称之为环境光。环境光可以用环境光系数乘以光源得到。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> ambienStrength=<span class="number">0.1f</span>;</span><br><span class="line">vec3 ambienLight=ambienStrength*lightColor;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>漫反射光：漫反射我们可以理解为，光线通过漫反射会被等强度地反射到四面八方，因此，漫反射的光强只和光线的入射角有关。因此我们只要求出光线和法线之间夹角的余弦值，然后将此作为漫反射的强度即可。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vec3 norm=<span class="built_in">normalize</span>(Normal);</span><br><span class="line">vec3 lightDir=<span class="built_in">normalize</span>(lightPos-Pos);</span><br><span class="line"><span class="type">float</span> diff=<span class="built_in">max</span>(<span class="built_in">dot</span>(norm,lightDir),<span class="number">0.f</span>);</span><br><span class="line">vec3 diffuse=diff*lightColor;</span><br></pre></td></tr></table></figure>
+<p>注意这里计算<code>diff</code>的时候用到了<code>max</code>函数，这是为了防止当光线和法线夹角出现钝角时变为负值。</p>
+<ul>
+<li>镜面反射：如果漫反射只是和入射角有关，那么镜面反射则是和反射光与观察者之间的夹角有关。这其实也很好理解，镜面反射就是物体身上的“高光”，这种高光只有在特定角度才可以被观察到。而最终还会将结果求N次幂，这是因为高光往往只有在很小的范围才可以被看见，所以当N越大，最后形成的高光区也越小，同时亮度也越大，从而表现出一定的“金属性”。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> mirrorStrenght=<span class="number">0.5f</span>;</span><br><span class="line">vec3 viewDir=<span class="built_in">normalize</span>(viewPos-Pos);</span><br><span class="line">vec3 reflectDir=<span class="built_in">normalize</span>(<span class="built_in">reflect</span>(-lightDir,norm));</span><br><span class="line"><span class="type">float</span> mir=<span class="built_in">pow</span>(<span class="built_in">max</span>(<span class="built_in">dot</span>(viewDir,reflectDir),<span class="number">0.f</span>),<span class="number">32</span>);</span><br><span class="line">vec3 mirror=mirrorStrenght*mir*lightColor;</span><br></pre></td></tr></table></figure>
+<p>这里会发现，还多加了一个<code>mirrorStrenght</code>的参数，这是镜面反射强度，这是为了防止镜面反射过亮造成不真实感。最后将三种光照叠加在一起，再结合上物体本来的颜色，就会得到该点最终渲染出来的颜色<code>vec3 result=(ambienLight+diffuse+mirror)*objectColor</code>。<br></p>
+<p><img src="/images/result.png" alt="" /></p>
+<blockquote>
+<p>材质</p>
+</blockquote>
+<p>如果我们对物体的颜色针对不同的光照分出不同的颜色，那么只要参数调整的得当，我们是不是可以模拟世界上任何一种材质了。因此材质的概念也就呼之欲出了。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Material</span>&#123;</span><br><span class="line"></span><br><span class="line">    vec3 ambient;</span><br><span class="line">    vec3 diffuse;</span><br><span class="line">    vec3 specular;</span><br><span class="line">    <span class="type">float</span> shininess;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>设定完了材质，我们对光也可以做出对应的修改，因为对于不同的光，物体反射出来的效果也应该是不同的，所以可以这样定义光源。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Light</span>&#123;</span><br><span class="line"></span><br><span class="line">    vec3 position;</span><br><span class="line">    vec3 ambient;</span><br><span class="line">    vec3 diffuse;</span><br><span class="line">    vec3 specular;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>这样，我们再根据之前的phong模型进行计算就可以得出不同的光照条件下物体所呈现的颜色了。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">vec3 ambientLight=light.ambient*material.ambient;</span><br><span class="line">vec3 lightDir=<span class="built_in">normalize</span>(light.position-Pos);</span><br><span class="line">vec3 norm=<span class="built_in">normalize</span>(Normal);</span><br><span class="line"><span class="type">float</span> diff=<span class="built_in">max</span>(<span class="built_in">dot</span>(lightDir,norm),<span class="number">0.f</span>);</span><br><span class="line">vec3 diffLight=light.diffuse*diff*material.ambient;</span><br><span class="line">vec3 viewDir=<span class="built_in">normalize</span>(ViewPos-Pos);</span><br><span class="line">vec3 reflectLight=<span class="built_in">normalize</span>(<span class="built_in">reflect</span>(-lightDir,norm));</span><br><span class="line"><span class="type">float</span> specular=<span class="built_in">pow</span>(<span class="built_in">max</span>(<span class="built_in">dot</span>(reflectLight,viewDir),<span class="number">0.f</span>),material.shininess);</span><br><span class="line">vec3 specularLight=light.specular*specular*material.specular;</span><br><span class="line">vec3 result=ambientLight+diffLight+specularLight;</span><br><span class="line"></span><br><span class="line">FragColor=<span class="built_in">vec4</span>(result,<span class="number">1.f</span>);</span><br></pre></td></tr></table></figure>
+<p>我们可以定义不同的<code>ambien</code>、<code>diffuse</code>和<code>specular</code>来模仿不同的材质，这些分别是铬、金和珍珠的材质<br />
+<img src="/images/chrome.png" alt="" /><br />
+<img src="/images/gold.png" alt="" /><br />
+<img src="/images/pearl.png" alt="" /></p>
 
     </div>
 
@@ -373,13 +370,13 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2023/12/13/%E6%B7%B7%E5%90%88%E9%9D%A2%E5%89%94%E9%99%A4/" rel="prev" title="混合面剔除">
-                  <i class="fa fa-angle-left"></i> 混合面剔除
+                <a href="/2023/10/29/%E7%BA%B9%E7%90%86/" rel="prev" title="纹理">
+                  <i class="fa fa-angle-left"></i> 纹理
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/12/28/%E7%AB%8B%E6%96%B9%E4%BD%93%E8%B4%B4%E5%9B%BE/" rel="next" title="立方体贴图">
-                  立方体贴图 <i class="fa fa-angle-right"></i>
+                <a href="/2023/11/05/%E5%85%89%E7%85%A7%E8%B4%B4%E5%9B%BE/" rel="next" title="光照贴图">
+                  光照贴图 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>

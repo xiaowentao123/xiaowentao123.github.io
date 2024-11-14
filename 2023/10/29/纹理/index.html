@@ -21,29 +21,30 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"www.geekbrohood.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"changyan","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="到目前为止，我们已经掌握了很多缓冲，比如用来储存顶点的GL_ARRAY_BUFFER，用来储存顶点索引的GL_ELEMENT_ARRAY_BUFFER以及储存颜色的颜色缓冲，储存深度信息的深度缓冲等等，这些诸多缓冲其实就是构成每一帧画面的诸多要素，所以故而便存在一个储存这些所有缓冲的缓冲，便是帧缓冲。 和其他缓冲一样，帧缓冲的创建也是先创建，然后再绑定。glGenFramebuffers用来创建一">
+    <meta name="description" content="纹理的意义  实际上，如果我们规定死每个顶点的颜色属性，那么其实也可以呈现出丰富的画面，但是往往一个面上的像素点有成千上万个，尚且不说这么做会消耗大量的内存，光是将这些点渲染出来就会耗费大量的时间。所以如果我们可以将一张图片和一个面上的点一一映射起来，这样不就可以把图片“粘”在物体的面上了吗，因此这也便是纹理（Texture）的由来。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="帧缓冲">
-<meta property="og:url" content="https://www.geekbrohood.cn/2023/12/18/%E5%B8%A7%E7%BC%93%E5%86%B2/index.html">
+<meta property="og:title" content="纹理">
+<meta property="og:url" content="https://www.geekbrohood.cn/2023/10/29/%E7%BA%B9%E7%90%86/index.html">
 <meta property="og:site_name" content="白乐天的代码小站">
-<meta property="og:description" content="到目前为止，我们已经掌握了很多缓冲，比如用来储存顶点的GL_ARRAY_BUFFER，用来储存顶点索引的GL_ELEMENT_ARRAY_BUFFER以及储存颜色的颜色缓冲，储存深度信息的深度缓冲等等，这些诸多缓冲其实就是构成每一帧画面的诸多要素，所以故而便存在一个储存这些所有缓冲的缓冲，便是帧缓冲。 和其他缓冲一样，帧缓冲的创建也是先创建，然后再绑定。glGenFramebuffers用来创建一">
+<meta property="og:description" content="纹理的意义  实际上，如果我们规定死每个顶点的颜色属性，那么其实也可以呈现出丰富的画面，但是往往一个面上的像素点有成千上万个，尚且不说这么做会消耗大量的内存，光是将这些点渲染出来就会耗费大量的时间。所以如果我们可以将一张图片和一个面上的点一一映射起来，这样不就可以把图片“粘”在物体的面上了吗，因此这也便是纹理（Texture）的由来。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://www.geekbrohood.cn/images/output-wscu.png">
-<meta property="article:published_time" content="2023-12-17T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-12-17T16:00:00.000Z">
+<meta property="og:image" content="https://www.geekbrohood.cn/images/tex_coords.png">
+<meta property="og:image" content="https://www.geekbrohood.cn/images/texture_filtering.png">
+<meta property="article:published_time" content="2023-10-28T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-10-28T16:00:00.000Z">
 <meta property="article:author" content="Bailetian">
 <meta property="article:tag" content="OpenGL">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://www.geekbrohood.cn/images/output-wscu.png">
+<meta name="twitter:image" content="https://www.geekbrohood.cn/images/tex_coords.png">
 
 
-<link rel="canonical" href="https://www.geekbrohood.cn/2023/12/18/%E5%B8%A7%E7%BC%93%E5%86%B2/">
+<link rel="canonical" href="https://www.geekbrohood.cn/2023/10/29/%E7%BA%B9%E7%90%86/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.geekbrohood.cn/2023/12/18/%E5%B8%A7%E7%BC%93%E5%86%B2/","path":"2023/12/18/帧缓冲/","title":"帧缓冲"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.geekbrohood.cn/2023/10/29/%E7%BA%B9%E7%90%86/","path":"2023/10/29/纹理/","title":"纹理"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>帧缓冲 | 白乐天的代码小站</title>
+<title>纹理 | 白乐天的代码小站</title>
   
 
 
@@ -215,10 +216,10 @@
   </div>
   <ul class="popular-posts">
     <li class="popular-posts-item">
-      <a class="popular-posts-link" href="/2023/10/29/%E7%BA%B9%E7%90%86/" rel="bookmark">
-        <time class="popular-posts-time">2023-10-29</time>
+      <a class="popular-posts-link" href="/2023/12/18/%E5%B8%A7%E7%BC%93%E5%86%B2/" rel="bookmark">
+        <time class="popular-posts-time">2023-12-18</time>
         <br>
-      纹理
+      帧缓冲
       </a>
     </li>
     <li class="popular-posts-item">
@@ -248,7 +249,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.geekbrohood.cn/2023/12/18/%E5%B8%A7%E7%BC%93%E5%86%B2/">
+    <link itemprop="mainEntityOfPage" href="https://www.geekbrohood.cn/2023/10/29/%E7%BA%B9%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/Avatar.jpg">
@@ -261,12 +262,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="帧缓冲 | 白乐天的代码小站">
+      <meta itemprop="name" content="纹理 | 白乐天的代码小站">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          帧缓冲
+          纹理
         </h1>
 
         <div class="post-meta-container">
@@ -277,7 +278,7 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2023-12-18 00:00:00" itemprop="dateCreated datePublished" datetime="2023-12-18T00:00:00+08:00">2023-12-18</time>
+      <time title="创建时间：2023-10-29 00:00:00" itemprop="dateCreated datePublished" datetime="2023-10-29T00:00:00+08:00">2023-10-29</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -298,47 +299,38 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><p>到目前为止，我们已经掌握了很多缓冲，比如用来储存顶点的<code>GL_ARRAY_BUFFER</code>，用来储存顶点索引的<code>GL_ELEMENT_ARRAY_BUFFER</code>以及储存颜色的颜色缓冲，储存深度信息的深度缓冲等等，这些诸多缓冲其实就是构成每一帧画面的诸多要素，所以故而便存在一个储存这些所有缓冲的缓冲，便是帧缓冲。</p>
-<p>和其他缓冲一样，帧缓冲的创建也是先创建，然后再绑定。<code>glGenFramebuffers</code>用来创建一个帧缓冲，再将帧缓冲用<code>glBindFramebuffer</code>绑定到<code>GL_FRAMEBUFFER</code>之后，便可以开始对其进行修改。刚创建好的帧缓冲其实是不完整的，一个完整的帧缓冲需要满足以下的条件：  <span id="more"></span></p>
+    <div class="post-body" itemprop="articleBody"><blockquote>
+<p>纹理的意义</p>
+</blockquote>
+<p>实际上，如果我们规定死每个顶点的颜色属性，那么其实也可以呈现出丰富的画面，但是往往一个面上的像素点有成千上万个，尚且不说这么做会消耗大量的内存，光是将这些点渲染出来就会耗费大量的时间。所以如果我们可以将一张图片和一个面上的点一一映射起来，这样不就可以把图片“粘”在物体的面上了吗，因此这也便是纹理（Texture）的由来。</p>
+<span id="more"></span>
+<blockquote>
+<p>纹理映射</p>
+</blockquote>
+<p>和之前的三角颜色板一样，我们只要规定好顶点的颜色（坐标），其余中间的点变会根据顶点自动进行差值运算。所以我们只需要规定好每个顶点的纹理坐标。</p>
 <ul>
-<li>附加至少一个缓冲（颜色、深度或模板缓冲）</li>
-<li>至少有一个颜色缓冲附件(color-attachment)</li>
-<li>所有的附件都必须是完整的（保留了内存）</li>
-<li>每个缓冲都应该有相同的样本数。</li>
+<li>纹理坐标：以2D纹理为例，纹理坐标有x、y两个轴（或者说是s、t轴），范围是在（0，1）之间。确定好顶点的纹理坐标后，中间点的纹理直接可以通过插值来得出。<br><br />
+<img src="/images/tex_coords.png" alt="tex_coords.png" /><br></li>
+<li>纹理过滤：如果此时纹理图片非常大图形很小又或者是图形很大而纹理图案很小将会怎么样呢？openGL本身会自适应大小，即是讲纹理放缩到和图形同样大小。在这个过程中会出现这样一个现象：纹理坐标和像素没有关系，它只是由片段着色器插值出来的一个（0，1）的坐标，由坐标映射到图片上的时候，往往不是一一对应到每个像素点，也就是说它很可能落在几个像素块之间，这时候要怎么办？于是便引申出来了两种近似方法：<strong>邻近过滤</strong>和<strong>线性过滤</strong>。<br><br />
+邻近过滤顾名思义是讲离纹理坐标最近的像素快中心作为这一点的像素颜色，而线性过滤则是根据纹理坐标周围的像素块进行差值，(通常是四块，图形学里叫做<strong>双线性差值</strong>)，然后将结果作为改纹理坐标点颜色。两种方式的结果也显而易见，由于都是通过周围点的信息来代替该点的信息，因此该点综合周围点的信息越多，图片效果也会越清晰，或者说越平滑。<br><br />
+<img src="/images/texture_filtering.png" alt="texture_filtering.png" /><br></li>
+<li>多级渐远纹理（MipMap）：在一个复杂场景中，物体的远近会影响物体视觉上的大小，如果物体很小，甚至只有几百个像素点时，那么原来的纹理就会显得很大，选取点就会十分困难，而此时如果一个纹理可以分成像素不同的多份，然后根据物体的远近自动切换相应像素点纹理，这样不就可以解决了，这也便是MipMap的功能。但是这里还有一个问题，就是如果刚好是处在两个级别之间应该如果处理呢？其实还是可以借用之前处理纹理过滤的方法，即是<strong>NEAREST</strong>和<strong>LINEAR</strong>，为此OpenGL为MipMap提供了四种不同的过滤方式：<strong>GL_NEAREST_MIPMAP_NEAREST</strong>、<strong>GL_LINEAR_MIPMAP_NEAREST</strong>、<strong>GL_NEAREST_MIPMAP_LINEAR</strong>和<strong>GL_LINEAR_MIPMAP_LINEAR</strong>。</li>
+<li>纹理环绕：纹理坐标是（0，1），但是如果我们把纹理坐标放大到（0，1）之外呢？openGL默认会对纹理进行重复，即复制一份然后接上去，当然还有其他的复制样式：GL_REPEAT(直接进行重复)、GL_MIRRORED_REPEAT(镜像复制)、GL_CLAMP_TO_EDGE(超出部分会重复纹理的边缘，呈现出一种拉升的效果)、GL_CLAMP_TO_BORDER(超出部分会变成指定颜色，呈现出一种边框的效果)。</li>
 </ul>
 <blockquote>
-<p>附件</p>
+<p>纹理设置</p>
 </blockquote>
-<p>附件其实可以理解为一段内存，也即是在计算机内存中真实的内存空间，一个帧缓冲只有拥有附件的时候才是有效的。附件也分为纹理附件和缓冲对象附件。</p>
-<ol>
-<li>纹理附件</li>
-</ol>
-<p>纹理附件顾名思义，就是利用纹理的格式作为帧缓冲的内存，它可以将帧缓冲里面储存的东西以纹理的形式保存下来，这样使用起来也可以按照纹理的格式去使用。首先需要创建一个空的纹理，我们之前创建的纹理都是先用<code>stbi_image</code>导入图像后再将图像导入进纹理，但是这里由于我们事先没有纹理数据，所以只能创建一个空的纹理<code>glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,widht,height,GL_RGB,GL_UNSIGNED_BYTE,NULL)</code>。创建完成后再设置纹理必要参数，例如环绕模式，纹理过滤器，多级渐远纹理等等。之后我们就可以将纹理绑定在我们创建好的<code>framebuffer</code>上了，<code>glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,texture,0)</code></p>
+<p>和之前的VAO、VBO和EBO一样texture也需要先申明Texture，然后再将数据绑定到上面去，这也体现了OpenGL状态机的特性。</p>
 <ul>
-<li>target：帧缓冲的目标（一般都是GL_FRAMEBUFFER）</li>
-<li>attachment：我们想要附加的附件类型，颜色附件就是GL_COLOR_ATTACHMENTN,注意这里的N表示附加很多个颜色纹理附件，就和纹理中的GL_TEXUTURE0（1，2，3…）一样，可以有很多个。</li>
-<li>textarget：希望附加的纹理类型，一般都是2D纹理，所以就是GL_TEXTURE_2D。</li>
-<li>texuture：要附加的纹理本身。</li>
-<li>level：多级渐远纹理级别，这里设置为最近一级也即是0即可。</li>
+<li>创建纹理：也是用<code>glGenXXX</code>开头的语句，<code>glGenTextures</code>来创建。</li>
+<li>设置属性：和VBO一样，纹理也有很多属性，但是在设置这些属性之前，还应当先绑定<code>glBindTexture</code>，然后可以设置纹理的复制方式，也就是纹理环绕，<code>glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT)</code>和<code>glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT)</code>因为S和T坐标都要设置，当然如果是三维纹理那么还有R坐标。之后便是纹理过滤，即是NEAREST还是LINEAR，<code>glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR)</code>，注意到属性的设置都是<code>glTexParameter</code>开头，这也是一个重构函数，后面也可以跟i、f等这样的参数类型后缀。</li>
+<li>绑定数据：这里通过<code>stb_image</code>头文件将png的数据导入<code>stbi_load(&quot;/path/to/image&quot;,&amp;width,&amp;height,&amp;nrChannels,0)</code>，其中width、height和nrChannels分别表示图片的长、宽还有颜色通道数。讲图片数据导入后，便要和纹理进行绑定<code>glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,width,height,0,GL_RGB,GL_UNSIGNED_BYTE,data)</code>，其中<code>data</code>就是图片的数据，以二进制的形式导入。</li>
 </ul>
-<p>当然除了颜色可以用纹理的格式存储外，深度和模板都是可以的，如果要存储深度，那么纹理格式和内部格式就要改成<code>GL_DEPTH_COMPONENT</code>，并且绑定时的附件类型就要变成<code>GL_DEPTH_ATTACHMENT</code>；如果要存储模板缓冲，那么纹理格式就要改成<code>GL_STENCIL_INDEX</code>绑定时附件类型改为<code>GL_STENCIL_ATTACHMENT</code>。同时深度与模板可以合并一个纹理附加到帧缓冲中，纹理格式为<code>GL_DEPTH24_STENCIL8</code>，格式的含义是用24位来存储深度信息，用8位来存储模板信息。同时附件类型变为<code>GL_DEPTH_STENCIL_ATTACHMENT</code>。</p>
-<ol start="2">
-<li>渲染缓冲对象附件(Renderbuffer Object)</li>
-</ol>
-<p>在引入渲染缓冲对象之前，纹理是唯一可用的附件，所以所有的信息都需要转换位纹理再使用。但是纹理并不是针对帧缓冲设计的，所以转换起来需要耗费一定时间。所以渲染缓冲便是针对帧缓冲而设计的。渲染缓冲直接将所有的渲染数据存储到它里面，所以它可以很快速的被写入或者复制到其他缓冲中去，所以像交换缓冲(即每次最后进行的<code>glfwSwapBuffers</code>)便可以用渲染缓冲对象实现。但是渲染缓冲对象是只写的，所以一般用于只需要写操作的缓冲，例如深度缓存和模板缓存。</p>
-<p>渲染缓冲对象用<code>glGenRenderbuffers</code>创建，然后<code>glBindRenderbuffer</code>之后，便可以创建它真正的缓冲，即内存中的位置<code>glRenderbufferStorage(GL_RENDERBUFFER,GL_DEPTH24_STENCIL8,width,height)</code>，最后也是用<code>glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DPETH_STENCIL_ATTACHMENT,GL_RENDERBUFFER,rbo)</code>来将渲染缓冲对象绑定到帧缓冲上面，这里注意到第三个参数变为了<code>GL_RENDERBUFFER</code>，这表明附件是使用渲染缓冲作为存储的（其实从函数名已经可以看出来了）。</p>
 <blockquote>
-<p>开始渲染</p>
+<p>着色器应用</p>
 </blockquote>
-<p>有了缓冲附件，那么我们的帧缓冲就已经完整了，当然在使用前还可以用<code>glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE</code>来检查帧缓冲是否完整。首先我们要先创建一个帧缓冲：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">int</span> FBO;</span><br><span class="line"><span class="built_in">glGenFramebuffers</span>(<span class="number">1</span>,&amp;FBO);</span><br></pre></td></tr></table></figure>
-<p>之后就可以开始补充附件了，我们先创建颜色缓冲所需单独附件，这里我们选择纹理附件，因为写入纹理之后我们还需要将纹理渲染到其他图形上去。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">int</span> texture_pic;</span><br><span class="line"><span class="built_in">glGenTextures</span>(<span class="number">1</span>,&amp;texture_pic);</span><br><span class="line"><span class="built_in">glBindTexture</span>(GL_TEXTURE_2D,texture_pic);</span><br><span class="line"><span class="built_in">glTexImage2D</span>(GL_TEXTURE_2D,<span class="number">0</span>,GL_RGB,<span class="number">1200</span>,<span class="number">1200</span>,<span class="number">0</span>,GL_RGB,GL_UNSIGNED_BYTE,<span class="literal">NULL</span>);</span><br><span class="line"><span class="built_in">glTexParameteri</span>(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);</span><br><span class="line"><span class="built_in">glTexParameteri</span>(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);</span><br><span class="line"><span class="built_in">glBindTexture</span>(GL_TEXTURE_2D,<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
-<p>这里我们选择1200X1200的纹理尺寸，然后只设置纹理过滤，纹理环绕没有设置。之后便要设置深度缓冲和模板缓冲了，由于深度缓冲和模板缓冲我们不需要再使用，只要openGL自动进行模板测试和深度测试就可以了，所以我们选择缓冲对象附件。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">int</span> RBO;</span><br><span class="line"><span class="built_in">glGenRenderbuffers</span>(<span class="number">1</span>,&amp;RBO);</span><br><span class="line"><span class="built_in">glBindRenderbuffer</span>(GL_RENDERBUFFER,RBO);</span><br><span class="line"><span class="built_in">glRenderbufferStorage</span>(GL_RENDERBUFFER,GL_DEPTH24_STENCIL8,<span class="number">1200</span>,<span class="number">1200</span>);</span><br><span class="line"><span class="built_in">glBindRenderbuffer</span>(GL_RENDERBUFFER,<span class="number">0</span>);</span><br><span class="line">~~~~</span><br><span class="line">这里设置的缓冲对象大小也是<span class="number">1200</span>X1200和颜色缓冲对应，之后我们只需要将纹理附件和缓冲对象附件一并绑定到帧缓冲即可，最后还可以检查帧缓冲是否完整。</span><br><span class="line">~~~C++</span><br><span class="line"><span class="built_in">glBindFramebuffer</span>(GL_FRAMEBUFFER,FBO);</span><br><span class="line"><span class="built_in">glFramebufferTexture2D</span>(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,texture_pic,<span class="number">0</span>);</span><br><span class="line"><span class="built_in">glFramebufferRenderbuffer</span>(GL_FRAMEBUFFER,GL_DEPTH_STENCIL_ATTACHMENT,GL_RENDERBUFFER,RBO);</span><br><span class="line"><span class="keyword">if</span>(<span class="built_in">glCheckFramebufferStatus</span>(GL_FRAMEBUFFER)!=GL_FRAMEBUFFER_COMPLETE)&#123;</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;FrameBuffer is not complete!&quot;</span>&lt;&lt;endl;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">glBindFramebuffer</span>(GL_FRAMEBUFFER,<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
-<p>之后的阶段其实和之前渲染是完全一样的，只不过由于绑定了新的帧缓冲，所以渲染的最终结果不会显示到屏幕上而是被储存到了帧缓冲里面，所以这也叫离屏缓冲。这里还需要注意的是，在开始渲染之前还需要使用<code>glViewport(0,0,1200,1200)</code>来调整视口变换，因为我们这里的帧缓冲大小设置的是1200X1200，也就是相当于把屏幕画面放缩到了1200X1200，但是我们之前屏幕画面是800X600，所以如果不进行新的视口变化调整，渲染出来的画面会出问题。同样的，调整了视口变化，那么投影矩阵也要相对应进行调整<code>Projection=perspective(radians(45.f),1200*1.f/1200*1.f,0.1f,1000.f)</code>这样画面才不会被拉伸。<br />
-最后我们将离屏渲染出来的纹理绑定到一个矩形上，然后在默认的屏幕帧缓冲上渲染出这个矩形，那么将会看到这样的画面，就好像是投影在了一块屏幕上的感觉。<br />
-<img src="/images/output-wscu.png" alt="" /></p>
+<p>纹理最后如何参与着色器工作？这是在片段着色器中实现的，在片段着色器中声明一个<code>sampler2D</code>类型的变量，这个类型的变量可以拿到纹理的数据，之后用纹理和纹理坐标进行融合，边可以得到像素最后的颜色<code>texture(myTexture,myTexcoord)</code>。这个变量还可以赋值，值是表示第几个纹理，一般openGL可以允许同时存在16个纹理，分别是<code>TEXTURE0</code>~<code>TEXTURE15</code>，而赋值则用之前提到过的<code>glUniformXXX</code>即可。</p>
+<p>最后全部代码可以<a href="/images/main-hhli.cpp">在此</a>查看。</p>
 
     </div>
 
@@ -373,13 +365,13 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2023/12/13/%E6%B7%B7%E5%90%88%E9%9D%A2%E5%89%94%E9%99%A4/" rel="prev" title="混合面剔除">
-                  <i class="fa fa-angle-left"></i> 混合面剔除
+                <a href="/2023/10/24/%E7%9D%80%E8%89%B2%E5%99%A8/" rel="prev" title="着色器">
+                  <i class="fa fa-angle-left"></i> 着色器
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/12/28/%E7%AB%8B%E6%96%B9%E4%BD%93%E8%B4%B4%E5%9B%BE/" rel="next" title="立方体贴图">
-                  立方体贴图 <i class="fa fa-angle-right"></i>
+                <a href="/2023/11/02/%E5%85%89%E7%85%A7%E6%9D%90%E8%B4%A8/" rel="next" title="光照&材质">
+                  光照&材质 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-flat-top.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.geekbrohood.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"changyan","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前提概念   顶点数组对象(VAO,Vertex Array Object) 顶点缓冲对象(VBO,Vertex Buffer Object) 元素缓冲对象(EBO或IBO,Element Buffer Object Index Buffer Object)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="三角形绘制">
+<meta property="og:url" content="https://www.geekbrohood.cn/2023/10/21/%E4%B8%89%E8%A7%92%E5%BD%A2%E7%BB%98%E5%88%B6/index.html">
+<meta property="og:site_name" content="白乐天的代码小站">
+<meta property="og:description" content="前提概念   顶点数组对象(VAO,Vertex Array Object) 顶点缓冲对象(VBO,Vertex Buffer Object) 元素缓冲对象(EBO或IBO,Element Buffer Object Index Buffer Object)">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.geekbrohood.cn/images/pipeline.png">
+<meta property="og:image" content="https://www.geekbrohood.cn/images/f06d0bfd61d4b7cacda71f89ee04911.png">
+<meta property="og:image" content="https://www.geekbrohood.cn/images/0c9f35cedc0aa36d339533b1e8aa1b4.png">
+<meta property="article:published_time" content="2023-10-20T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-10-20T16:00:00.000Z">
+<meta property="article:author" content="Bailetian">
+<meta property="article:tag" content="OpenGL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.geekbrohood.cn/images/pipeline.png">
+
+
+<link rel="canonical" href="https://www.geekbrohood.cn/2023/10/21/%E4%B8%89%E8%A7%92%E5%BD%A2%E7%BB%98%E5%88%B6/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.geekbrohood.cn/2023/10/21/%E4%B8%89%E8%A7%92%E5%BD%A2%E7%BB%98%E5%88%B6/","path":"2023/10/21/三角形绘制/","title":"三角形绘制"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>三角形绘制 | 白乐天的代码小站</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">白乐天的代码小站</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Bailetian"
+      src="/images/Avatar.jpg">
+  <p class="site-author-name" itemprop="name">Bailetian</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaowentao123" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xiaowentao123" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:921036503@qq.com" title="E-Mail → mailto:921036503@qq.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/35335054" title="BiliBili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;35335054" rel="noopener me" target="_blank"><i class="fa-brands fa-bilibili fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://leetcode.cn/u/luo-sheng-tang-fu" title="Leetcode → https:&#x2F;&#x2F;leetcode.cn&#x2F;u&#x2F;luo-sheng-tang-fu" rel="noopener me" target="_blank"><i class="fa-solid fa-code fa-fw"></i></a>
+      </span>
+  </div>
+<div id="time-progress">
+        <p id="year-progress"></p>
+        <div class="progress-bar" id="year-progress-bar"></div>
+        <p id="month-progress"></p>
+        <div class="progress-bar" id="month-progress-bar"></div>
+        <p id="day-progress"></p>
+        <div class="progress-bar" id="day-progress-bar"></div>
+</div>
+<script src="/js/time-progress.js"></script>
+<style>
+#time-progress {
+    padding: 10px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+
+}
+
+.progress-bar {
+    height: 10px;
+    background-color: #4caf50;
+    border-radius: 5px;
+    margin: 5px 0;
+    width: 0;
+}
+
+#year-progress,#month-progress,#day-progress{
+    margin: 5px 0;
+    font-size: 14px;
+    color:black;
+    font-weight:bold;
+}
+</style>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa-solid fa-link fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://skyleaf.cn/" title="https:&#x2F;&#x2F;skyleaf.cn&#x2F;" rel="noopener" target="_blank">yesky的博客</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.geekbrohood.cn/2023/10/21/%E4%B8%89%E8%A7%92%E5%BD%A2%E7%BB%98%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Avatar.jpg">
+      <meta itemprop="name" content="Bailetian">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="白乐天的代码小站">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="三角形绘制 | 白乐天的代码小站">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          三角形绘制
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-10-21 00:00:00" itemprop="dateCreated datePublished" datetime="2023-10-21T00:00:00+08:00">2023-10-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><blockquote>
+<p>前提概念</p>
+</blockquote>
+<ul>
+<li>顶点数组对象(VAO,Vertex Array Object)</li>
+<li>顶点缓冲对象(VBO,Vertex Buffer Object)</li>
+<li>元素缓冲对象(EBO或IBO,Element Buffer Object Index Buffer Object)</li>
+</ul>
+<span id="more"></span>
+<blockquote>
+<p>渲染管线</p>
+</blockquote>
+<p>物体是如何从3D空间一步一步转换为2D并通过屏幕展示在我们眼前的？这个过程边可以称作是<strong>图形渲染管线</strong>也可以叫做<strong>管线</strong>。数据就好像是通过一个流水线一样，从最开始的由顶点构成的集合，最后在屏幕上呈现多彩的形状。渲染管线大致可以分成几个阶段：</p>
+<p><img src="/images/pipeline.png" alt="pipeline.png" /></p>
+<p>其中每个阶段的输出都讲作为下一阶段的输入继续加工。可以看到其中有一些阶段是彩色的，这些阶段可以由我们自行的用代码去控制，而这些阶段也有专门的名字叫<strong>着色器</strong>。着色器有专门的语法进行编写，OpenGL的着色器是由<strong>OpenGL着色器语言 OpenGL Shading Language,GLSL</strong>编写的。</p>
+<ul>
+<li><strong>顶点数据</strong></li>
+</ul>
+<p>首先数据以顶点数组的形式进行输入，要注意的是这里的顶点并不单纯的表示空间上的位置，有可能还会带有其他的属性，例如颜色等等，也就是说每一个顶点它都是多维的。</p>
+<ul>
+<li><strong>顶点着色器</strong></li>
+</ul>
+<p>之后顶点数据会来到第一个着色器，顶点着色器。这里可能会将顶点做一些变换，也即是<strong>MVP变换</strong>(Model-View-Project),将模型的本地坐标系变换到<strong>标准坐标系</strong>，同时还可以对顶点做一些其他的处理。</p>
+<ul>
+<li><strong>图元装配</strong></li>
+</ul>
+<p>这个阶段是将顶点着色器输出的顶点作为输入，并装配成指定的图元的形状，一般会装配成三角形。</p>
+<ul>
+<li><strong>几何着色器</strong></li>
+</ul>
+<p>顾名思义，几何着色器会在图元装配的基础上进一步加工，将图元进行改造，形成新的几何图形。</p>
+<ul>
+<li><strong>光栅化</strong></li>
+</ul>
+<p>图形最终是由像素的形式展现在屏幕上的，所以几何图形到这里要开始进行切分，将几何图形分成一个个的像素点，同时还会对几何图形进行裁剪，将超出你视图范围的像素裁剪掉，以提高渲染效率。在这个阶段每个像素会带有很多数据，这些数据也被称作片段，这些片段将会被送入下一个阶段继续进行加工。</p>
+<ul>
+<li><strong>片段着色器</strong></li>
+</ul>
+<p>片段着色器便会决定像素最终的颜色，这里可以实现很多复杂的效果，例如光照、阴影等，可以通过不同的光照模型计算得出像素的颜色。</p>
+<ul>
+<li><strong>测试与混合</strong></li>
+</ul>
+<p>在像素确定了最终颜色后，还不能直接显示出来，因为还要考虑像素之间的遮挡问题，也即是<strong>深度测试</strong>，同时还要考虑像素的Alpha值以及像素之间的混合，例如将两张图片混合在一起。所以在渲染多个物体后，物体的像素有可能是会一直变化的。</p>
+<p>在OpenGL里面，顶点着色器和片段着色器是必须提供的，而几何着色器可以使用OpenGL的默认着色器，也可以自己编写。</p>
+<blockquote>
+<p>渲染基本流程</p>
+</blockquote>
+<p>根据上面所述的流程，当然要先准备好顶点数据，这里我们准备绘制一个三角形，所以便建立三个顶点坐标。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> vertices[]=&#123;</span><br><span class="line">    <span class="number">-0.5f</span>,<span class="number">-0.5f</span>,<span class="number">0.f</span>,</span><br><span class="line">    <span class="number">0.5f</span>,<span class="number">-0.5f</span>,<span class="number">0.f</span>,</span><br><span class="line">    <span class="number">0.f</span>,<span class="number">0.5f</span>,<span class="number">0.f</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>顶点数据不能立马发送到顶点着色器，因为数据是在CPU中，要将CPU中的数据发送到GPU需要耗费大量的时间，所以应该先用一片GPU中的内存（也就是显存）将数据缓存起来。<strong>顶点缓冲对象（VBO）</strong> 便是用来管理这一内存的对象。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">int</span> VBO;<span class="comment">//顶点缓冲对象</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">glGenBuffers</span>(<span class="number">1</span>,&amp;VBO);</span><br><span class="line"><span class="built_in">glBindBuffer</span>(GL_ARRAY_BUFFER,VBO);</span><br><span class="line"><span class="built_in">glBufferData</span>(GL_ARRAY_BUFFER,<span class="built_in">sizeof</span>(vertices),vertices,GL_STATIC_DRAW);<span class="comment">//GL_STATIC_DRAW数据不会变，GL_DYNAMIC_DRAW数据会变改变很多，GL_STREAM_DRAW数据每次绘制都会改变</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">glVertexAttribPointer</span>(<span class="number">0</span>,<span class="number">3</span>,GL_FLOAT,GL_FALSE,<span class="number">3</span>*<span class="built_in">sizeof</span>(<span class="type">float</span>),(<span class="type">void</span>*)<span class="number">0</span>);</span><br><span class="line"><span class="built_in">glEnableVertexAttribArray</span>(<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+<p><em>opengl中的对象都是有一个唯一的标识符的，就像这里的vbo一样，通过glGenBuffers()拿到标识符，然后再将其绑定到GL_ARRAY_BUFFER类型上，绑定好后，现在GL_ARRAY_BUFFER上就有我们生成的缓存了，然后再用glBufferData()将数据复制到缓存上</em></p>
+<p>前面说到每个顶点可能不止包含一种属性，例如会有位置（x,y,z）、颜色（r,g,b,a）等等，所以为了让顶点着色器了解每一个顶点中各个属性对应的是着色器中的哪个部分，需要我们各个去指明，上面代码中<code>glVertexAttribPointer(index,size,type,normalized,stride,pointer)</code>便是做了这样一件事。其中各个参数的意义是：</p>
+<ul>
+<li><strong>index</strong>：指向的是着色器中的哪个属性，<code>layout (location = 0)</code>中的<code>location=0</code>就是这里指向的属性。</li>
+<li><strong>size</strong>：这里表明的是属性的维度，例如位置这个属性有三个维度分别是x,y,z。</li>
+<li><strong>type</strong>：数据的类型。</li>
+<li><strong>normalized</strong>：数据是否需要归一化，也即是要不要映射到[0,1]区间。</li>
+<li><strong>stride</strong>：属性的步长，也就是从当前属性跨到下一个同属性需要经过多长的距离，以位置属性为例，位置属性由三个Float参数构成，所以stride就是3*sizeof(float)</li>
+<li><strong>pointer</strong>：这个参数表示属性最开始的偏移量，例如如果一个顶点有两个属性构成，位置和颜色，位置在第一个，颜色在第二个，那么位置的偏移量就是0，颜色就是1，不过这里最后还需要转换成<code>(void*)</code>类型，也即是pointer分别是<code>(void*)0</code>和<code>(void*)1</code>。</li>
+</ul>
+<p>现在数据来到了顶点着色器，关于着色器的只是后面将会提及，这里先简单带过。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#version 330 core</span></span><br><span class="line"><span class="built_in">layout</span> (location=<span class="number">0</span>) in vec3 aPos;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    gl_Position=<span class="built_in">vec4</span>(aPos.x,aPos.y,aPos.z,<span class="number">1.0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这便是着色器的源码，有了源码后，还不能直接用，所以还需要进行编译，这里和VBO一样，需要先创建一个vertexShader对象，然后再将源码赋给顶点着色器对象，然后再进行动态编译。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">int</span> vertexShader;</span><br><span class="line">vertexShader=<span class="built_in">glCreateShader</span>(GL_VERTEX_SHADER);</span><br><span class="line"><span class="built_in">glShaderSource</span>(vertexShader,<span class="number">1</span>,&amp;vertexShaderSource,<span class="literal">NULL</span>);</span><br><span class="line"><span class="built_in">glCompileShader</span>(vertexShader);</span><br></pre></td></tr></table></figure>
+<p>随着渲染管线，数据来到了片段着色器，片段着色器是决定像素点的颜色。和顶点着色器一样，片段着色器也需要先申明着色器，再对着色器进行编译。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">int</span> fragmentShader;</span><br><span class="line">fragmentShader=<span class="built_in">glCreateShader</span>(GL_FRAGMENT_SHADER);</span><br><span class="line"><span class="built_in">glShaderSource</span>(fragmentShader,<span class="number">1</span>,&amp;fragmentShaderSource,<span class="literal">NULL</span>);</span><br><span class="line"><span class="built_in">glCompileShader</span>(fragmentShader);</span><br></pre></td></tr></table></figure>
+<p>但是OpenGL最终需要的是一个将这几种着色器链接在一起的着色器程序，所以最后需要申明一个着色器程序，然后再将顶点着色器和片段着色器进行链接。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">int</span> shaderProgram;</span><br><span class="line">shaderProgram=<span class="built_in">glCreateProgram</span>();</span><br><span class="line"><span class="built_in">glAttachShader</span>(shaderProgram,vertexShader);</span><br><span class="line"><span class="built_in">glAttachShader</span>(shaderProgram,fragmentShader);</span><br><span class="line"><span class="built_in">glLinkProgram</span>(shaderProgram);</span><br></pre></td></tr></table></figure>
+<p>就这样我们先是定义了顶点坐标，然后绑定了VBO，然后又申明了attribPointer来指明顶点中各个属性对应shader中哪个部分，然后又写了顶点着色器和片段着色器，然后再将其链接成着色器程序。现在我们终于可以开始绘制三角形了。利用<code>glDrawArrays;</code>函数我们便可以绘制我们的三角形。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">glUseProgram</span>(shaderProgram);</span><br><span class="line"><span class="built_in">glDrawArrays</span>(GL_TRIANGLES,<span class="number">0</span>,<span class="number">3</span>);</span><br></pre></td></tr></table></figure>
+<p>首先我们需要先将着色器程序加载到openGL管线，然后再利用glDrawArrays绘制出最终的图形。</p>
+<blockquote>
+<p>顶点数组对象和元素缓冲对象</p>
+</blockquote>
+<p>对于上述过程其实还存在两个问题，首先对于绘制一个图形来说，需要经过<code>glGenBuffers</code>、<code>glBindBuffer</code>、<code>glBufferData</code>和<code>glVertexAttribPointer</code>这一系列操作，如果这个图形需要在多个地方出现那么对于代码量来说将会是灾难的，那有什么办法可以只声明一遍这个物体，然后再其他地方直接可以复用呢？这时候就需要 <strong>顶点数组对象（VAO）</strong> 了。VAO创建和VBO很像，创建好后先绑定一次，要记住openGL本质是状态机，当绑定好VAO后，接下来的操作都会是建立在VAO上的，也就是说VBO的信息会记录到VAO上，最后再将VAO解绑，等后面要使用时再进行绑定即可。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">int</span> VAO;</span><br><span class="line"><span class="built_in">glGenVertexArrays</span>(<span class="number">1</span>,&amp;VAO);</span><br><span class="line"><span class="built_in">glBindVertexArray</span>(VAO);</span><br><span class="line"><span class="comment">//接下进行VBO的声明和绑定操作</span></span><br><span class="line"><span class="built_in">glBindVertexArray</span>(<span class="number">0</span>);<span class="comment">//最后解除绑定，也即是绑定到0上去。</span></span><br></pre></td></tr></table></figure>
+<p>对于三角形来说，我们只需要声明三个顶点，但是对于多边形来说，例如对于一个矩形，我们便需要用两个三角形来构成它，那么对于顶点坐标数组来说我们就要声明六个顶点，但实际上矩形只需要四个点就需要确定，这种性能上的浪费在实现多边形的时候将会是灾难，那么有什么办法只需要四个点就可以声明出这个矩形？实际上，对于矩形的四个顶点而言，我们只要定义好两个三角形顶点的顺序，那么就可以实现四个点来确定一个矩形。而这个顺序就是所谓的<strong>元素缓冲对象（EBO）</strong> 了。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> rectangle[]=&#123;</span><br><span class="line">    <span class="number">0.5f</span>,<span class="number">0.5f</span>,<span class="number">0.f</span>,  </span><br><span class="line">    <span class="number">0.5f</span>,<span class="number">-0.5f</span>,<span class="number">0.f</span>, </span><br><span class="line">    <span class="number">-0.5f</span>,<span class="number">-0.5f</span>,<span class="number">0.f</span>, </span><br><span class="line">    <span class="number">-0.5f</span>,<span class="number">0.5f</span>,<span class="number">0.f</span>  </span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">unsigned</span> <span class="type">int</span> indices[]=&#123;</span><br><span class="line">    <span class="number">0</span>,<span class="number">1</span>,<span class="number">3</span>,</span><br><span class="line">    <span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">unsigned</span> <span class="type">int</span> VAO_rec;</span><br><span class="line"><span class="type">unsigned</span> <span class="type">int</span> VBO_rec;</span><br><span class="line"><span class="built_in">glGenBuffers</span>(<span class="number">1</span>,&amp;VBO_rec);</span><br><span class="line"><span class="built_in">glGenVertexArrays</span>(<span class="number">1</span>,&amp;VAO_rec);</span><br><span class="line"><span class="built_in">glBindVertexArray</span>(VAO_rec);</span><br><span class="line"><span class="type">unsigned</span> <span class="type">int</span> EBO;</span><br><span class="line"><span class="built_in">glGenBuffers</span>(<span class="number">1</span>,&amp;EBO);</span><br><span class="line"><span class="built_in">glBindBuffer</span>(GL_ELEMENT_ARRAY_BUFFER,EBO);</span><br><span class="line"><span class="built_in">glBufferData</span>(GL_ELEMENT_ARRAY_BUFFER,<span class="built_in">sizeof</span>(indices),indices,GL_STATIC_DRAW);</span><br><span class="line"><span class="built_in">glBindBuffer</span>(GL_ARRAY_BUFFER,VBO_rec);</span><br><span class="line"><span class="built_in">glBufferData</span>(GL_ARRAY_BUFFER,<span class="built_in">sizeof</span>(rectangle),rectangle,GL_STATIC_DRAW);</span><br><span class="line"><span class="built_in">glVertexAttribPointer</span>(<span class="number">0</span>,<span class="number">3</span>,GL_FLOAT,GL_FALSE,<span class="number">3</span>*<span class="built_in">sizeof</span>(<span class="type">float</span>),(<span class="type">void</span>*)<span class="number">0</span>);</span><br><span class="line"><span class="built_in">glEnableVertexAttribArray</span>(<span class="number">0</span>);</span><br><span class="line"><span class="built_in">glBindVertexArray</span>(<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+<p>这样解决了这些问题后，我们就可以随心所欲的绘制各种图形了，下面代码绘制出了一个三角形和矩形，并且可以通过A、D键进行图形的切换。源码可以在此处<a href="/images/main.cpp">下载</a>。</p>
+<p><img src="/images/f06d0bfd61d4b7cacda71f89ee04911.png" alt="f06d0bfd61d4b7cacda71f89ee04911.png" /></p>
+<p><img src="/images/0c9f35cedc0aa36d339533b1e8aa1b4.png" alt="0c9f35cedc0aa36d339533b1e8aa1b4.png" /></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="Bailetian 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="Bailetian 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/OpenGL/" rel="tag"><i class="fa fa-tag"></i> OpenGL</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/10/21/OpenGL%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="prev" title="OpenGL环境搭建">
+                  <i class="fa fa-angle-left"></i> OpenGL环境搭建
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/10/24/%E7%9D%80%E8%89%B2%E5%99%A8/" rel="next" title="着色器">
+                  着色器 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2021 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">bailetian</span>
+  </div><span id="runtime_span"></span>
+<script type="text/javascript">function show_runtime(){window.setTimeout("show_runtime()",1000);X=new 
+    Date("12/31/2021 22:00:00");
+    Y=new Date();T=(Y.getTime()-X.getTime());M=24*60*60*1000;
+    a=T/M;A=Math.floor(a);b=(a-A)*24;B=Math.floor(b);c=(b-B)*60;C=Math.floor((b-B)*60);D=Math.floor((c-C)*60);
+    years = Math.floor(A / 365); 
+    A = A % 365; 
+    document.getElementById('runtime_span').innerHTML=`<i class="fa-solid fa-gear fa-spin"></i>&nbsp;<span>本站已经运行: </span >`+years+`<span > 年 </span>`+A+`<span > 天 </span>`+B+`<span> 小时 </span>`+C+`<span> 分 </span>`+D+`<span> 秒 </span>`}show_runtime();
+</script>
+
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/xiaowentao123" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" integrity="sha256-UF1fgpAiu3tPJN/uCqEUHNe7pnr+QR0SQDNfgglgtcM=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="/js/third-party/math/katex.js"></script>
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"xiaowentao123/xiaowentao123.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>
