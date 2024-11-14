@@ -1,1 +1,1 @@
-{"routes":[{"src":"/(.*)","dest":"https://www.geekbrohood.cn/404","status":404}]}
+{"version":2,"routes":[{"src":"/(.*)","dest":"/404","status":404}]}
