@@ -21,31 +21,36 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"www.geekbrohood.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"changyan","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="模板测试简介  在几何着色器之后，渲染管线便来到了模板测试，这是一个在深度测试之前的测试。和深度测试一样，模板测试也是根据某个值将像素点剔除，只不过深度测试是通过深度值也就是Z轴值来剔除罢了。">
+    <meta name="description" content="UE编译  账号关联  由于Unreal Engine的代码需要先加入Epic组织才可以查看，所以先要去Unreal Engine的官网将自己的账号和Epic进行关联，这样才可以在Github上找到Unreal Engine的源码。  源码编译  下载好UE引擎的源码后，进入文件夹，以管理员的权限先运行Setup.bat脚本，让其将相关依赖下载下来。  下载完成后再运行GenerateProje">
 <meta property="og:type" content="article">
-<meta property="og:title" content="模板测试">
-<meta property="og:url" content="https://www.geekbrohood.cn/2023/11/13/%E6%A8%A1%E6%9D%BF%E6%B5%8B%E8%AF%95/index.html">
+<meta property="og:title" content="【ue学习】UE编译和项目打包">
+<meta property="og:url" content="https://www.geekbrohood.cn/2024/11/19/%E3%80%90ue%E5%AD%A6%E4%B9%A0%E3%80%91UE%E7%BC%96%E8%AF%91%E5%92%8C%E9%A1%B9%E7%9B%AE%E6%89%93%E5%8C%85/index.html">
 <meta property="og:site_name" content="白乐天的代码小站">
-<meta property="og:description" content="模板测试简介  在几何着色器之后，渲染管线便来到了模板测试，这是一个在深度测试之前的测试。和深度测试一样，模板测试也是根据某个值将像素点剔除，只不过深度测试是通过深度值也就是Z轴值来剔除罢了。">
+<meta property="og:description" content="UE编译  账号关联  由于Unreal Engine的代码需要先加入Epic组织才可以查看，所以先要去Unreal Engine的官网将自己的账号和Epic进行关联，这样才可以在Github上找到Unreal Engine的源码。  源码编译  下载好UE引擎的源码后，进入文件夹，以管理员的权限先运行Setup.bat脚本，让其将相关依赖下载下来。  下载完成后再运行GenerateProje">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://www.geekbrohood.cn/images/stencil_buffer.png">
-<meta property="og:image" content="https://www.geekbrohood.cn/images/origin.png">
-<meta property="og:image" content="https://www.geekbrohood.cn/images/clickon.png">
-<meta property="article:published_time" content="2023-11-12T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-11-12T16:00:00.000Z">
+<meta property="og:image" content="https://www.geekbrohood.cn/images/bd9acf76869c74ab4d1873f58d013ab.png">
+<meta property="og:image" content="https://www.geekbrohood.cn/images/fa7e162897a6e10cdf502e1a9983387.png">
+<meta property="og:image" content="https://www.geekbrohood.cn/images/e03c14fb5a905b481ea517038aa204f.png">
+<meta property="og:image" content="https://www.geekbrohood.cn/images/77dfc938340aebe63e530d2f193233d.png">
+<meta property="og:image" content="https://www.geekbrohood.cn/images/eb64f08fbd70bc14c5136b692c44183.png">
+<meta property="og:image" content="https://www.geekbrohood.cn/images/166134d6b780aa1e4f331919bea3671.png">
+<meta property="og:image" content="https://www.geekbrohood.cn/images/c2132dd6f70b7f4d6f81d833e68f6d7.png">
+<meta property="og:image" content="https://www.geekbrohood.cn/images/a2f513994716cc1dea790f78eacbf17.png">
+<meta property="article:published_time" content="2024-11-19T08:48:09.000Z">
+<meta property="article:modified_time" content="2024-11-19T09:09:35.277Z">
 <meta property="article:author" content="Bailetian">
-<meta property="article:tag" content="OpenGL">
+<meta property="article:tag" content="UE">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://www.geekbrohood.cn/images/stencil_buffer.png">
+<meta name="twitter:image" content="https://www.geekbrohood.cn/images/bd9acf76869c74ab4d1873f58d013ab.png">
 
 
-<link rel="canonical" href="https://www.geekbrohood.cn/2023/11/13/%E6%A8%A1%E6%9D%BF%E6%B5%8B%E8%AF%95/">
+<link rel="canonical" href="https://www.geekbrohood.cn/2024/11/19/%E3%80%90ue%E5%AD%A6%E4%B9%A0%E3%80%91UE%E7%BC%96%E8%AF%91%E5%92%8C%E9%A1%B9%E7%9B%AE%E6%89%93%E5%8C%85/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.geekbrohood.cn/2023/11/13/%E6%A8%A1%E6%9D%BF%E6%B5%8B%E8%AF%95/","path":"2023/11/13/模板测试/","title":"模板测试"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.geekbrohood.cn/2024/11/19/%E3%80%90ue%E5%AD%A6%E4%B9%A0%E3%80%91UE%E7%BC%96%E8%AF%91%E5%92%8C%E9%A1%B9%E7%9B%AE%E6%89%93%E5%8C%85/","path":"2024/11/19/【ue学习】UE编译和项目打包/","title":"【ue学习】UE编译和项目打包"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>模板测试 | 白乐天的代码小站</title>
+<title>【ue学习】UE编译和项目打包 | 白乐天的代码小站</title>
   
 
 
@@ -104,7 +109,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -117,6 +122,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ue%E7%BC%96%E8%AF%91"><span class="nav-number">1.</span> <span class="nav-text"> UE编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E6%89%93%E5%8C%85"><span class="nav-number">2.</span> <span class="nav-text"> 项目打包</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -226,7 +232,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.geekbrohood.cn/2023/11/13/%E6%A8%A1%E6%9D%BF%E6%B5%8B%E8%AF%95/">
+    <link itemprop="mainEntityOfPage" href="https://www.geekbrohood.cn/2024/11/19/%E3%80%90ue%E5%AD%A6%E4%B9%A0%E3%80%91UE%E7%BC%96%E8%AF%91%E5%92%8C%E9%A1%B9%E7%9B%AE%E6%89%93%E5%8C%85/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/Avatar.jpg">
@@ -239,12 +245,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="模板测试 | 白乐天的代码小站">
+      <meta itemprop="name" content="【ue学习】UE编译和项目打包 | 白乐天的代码小站">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          模板测试
+          【ue学习】UE编译和项目打包
         </h1>
 
         <div class="post-meta-container">
@@ -254,8 +260,9 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2023-11-13 00:00:00" itemprop="dateCreated datePublished" datetime="2023-11-13T00:00:00+08:00">2023-11-13</time>
+      <time title="创建时间：2024-11-19 16:48:09 / 修改时间：17:09:35" itemprop="dateCreated datePublished" datetime="2024-11-19T16:48:09+08:00">2024-11-19</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -263,7 +270,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
+          <a href="/categories/Unraeal-Engine/" itemprop="url" rel="index"><span itemprop="name">Unraeal Engine</span></a>
         </span>
     </span>
 
@@ -276,30 +283,31 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><blockquote>
-<p>模板测试简介</p>
-</blockquote>
-<p>在几何着色器之后，渲染管线便来到了模板测试，这是一个在深度测试之前的测试。和深度测试一样，模板测试也是根据某个值将像素点剔除，只不过深度测试是通过深度值也就是Z轴值来剔除罢了。</p>
-<span id="more"></span>
-<p>深度测试通过深度缓冲来进行，那么模板测试便是通过模板缓冲。模板缓冲已经通过GLFW库自动创建，所以我们无需再自己创建模板缓冲。每个像素都会有一个八位的模板值，所以我们可以设置一共256种不同的模板值，当某个片段等于（或者大于、小于、不等于等等，这取决于模板测试函数）某个特定值的时候，便保留下该片段然后继续送入深度测试。</p>
-<p><img src="/images/stencil_buffer.png" alt="" /></p>
+    <div class="post-body" itemprop="articleBody"><h2 id="ue编译"><a class="markdownIt-Anchor" href="#ue编译"></a> UE编译</h2>
 <blockquote>
-<p>模板函数</p>
+<p>账号关联</p>
 </blockquote>
-<p>openGL提供了两个参数可以来操作模板值，分别是<code>glStencilFunc</code>和<code>glStencilOp</code>，前者可以规定如何操作模板值，后者则规定测试过后模板值的变化。</p>
-<ul>
-<li>glStencilFunc：函数原型<code>glStencilFunc(GLenum func, GLint ref, GLuint mask)</code>，其中<code>func</code>表示模板测试函数，改函数一共有八个值语义和深度测试函数相同：<strong>GL_NEVER(永远不通过)</strong>、<strong>GL_LESS(小于)</strong>、<strong>GL_LEQUAL(小于等于)</strong>、<strong>GL_GREATER(大于)</strong>、<strong>GL_GEQUAL(大于等于)</strong>、<strong>GL_EQUAL(等于)</strong>、<strong>GL_NOTEQUAL(不等于)</strong>、<strong>GL_ALWAYS(一直通过)</strong>。<code>ref</code>表示要与模板值进行比较的值。<code>mask</code>表示掩码，即模板值会与掩码进行按位与的操作，一般都设置为<code>0xFF</code>即对原模板值无影响。</li>
-<li>glStencilOp：函数原型<code>glStencilOp(GLenum sfail, GLenum dpfail, GLenum dppass)</code>，其中参数分别表示“当模板测试失败时”、“当模板测试通过深度测试失败时”以及当“模板测试和深度测试都通过时”对模板值的操作，这里的操作也有八种：<strong>GL_KEEP(保持当前储存的模板值)</strong>、<strong>GL_ZERO(将模板值设置为0)</strong>、<strong>GL_REPLACE(将模板值设置为glStencilFunc函数设置的ref值)</strong>、<strong>GL_INCR(如果模板值小于最大值则将模板值加1)</strong>、<strong>GL_INCR_WRAP(与GL_INCR一样，但是如果模板值超过了最大值则归零)</strong>、<strong>GL_DECR(如果模板值大于最小值则模板值减1)</strong>、<strong>GL_DECR_WRAP(与GL_DECR一样，但如果模板值小于0则将其设置为最大值)</strong>、<strong>GL_INVERT(按位翻转当前的模板缓冲值)</strong>。</li>
-</ul>
+<p>由于Unreal Engine的代码需要先加入Epic组织才可以查看，所以先要去Unreal Engine的官网将自己的账号和Epic进行关联，这样才可以在Github上找到Unreal Engine的源码。</p>
 <blockquote>
-<p>物体轮廓</p>
+<p>源码编译</p>
 </blockquote>
-<p>模板测试一个很有用的应用便是物体轮廓，这在有些游戏中或者是3D编辑器中用处很广，当用户点击某个物体后物体外层会出现一圈高亮的轮廓。<br />
-操作思路也很简单，可以先将物体最外面那一层（就是摄像机可以看到的）的模板值全部设定为1，然后此时将模板值锁死，并将模板函数设定成不等于1时通过，然后再在原来物体的位置绘制一个体积稍大的物体，并将其片段着色器设置为某种纯色，原来位置的模板缓存已经设定为1，而且此时模板值锁死不再接受输入，所以也就是说是有物体外面那一圈的模板值不是1，然后再绘制新的物体，这时候新物体会因为中间模板测试不通过而只被绘制出外围一圈，从而也便达到了高亮物体轮廓的目的。当然再绘制完轮廓后还要记得将模板值解锁，这样下一个循环物体才能绘制成功。具体的代码如下所示：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">glStencilFunc</span>(GL_NOTEQUAL,<span class="number">1</span>,<span class="number">0xFF</span>);</span><br><span class="line"><span class="built_in">glDisable</span>(GL_DEPTH_TEST);</span><br><span class="line"><span class="built_in">glStencilMask</span>(<span class="number">0x00</span>);<span class="comment">//锁住模板值</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//外围物体绘制...</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">glEnable</span>(GL_DEPTH_TEST);</span><br><span class="line"><span class="built_in">glStencilMask</span>(<span class="number">0xFF</span>);<span class="comment">//结束后将模板值解锁</span></span><br><span class="line"><span class="built_in">glStencilFunc</span>(GL_ALWAYS,<span class="number">1</span>,<span class="number">0xFF</span>);</span><br></pre></td></tr></table></figure>
-<p>最后的效果就会是这样：</p>
-<p><img src="/images/origin.png" alt="" /><br />
-<img src="/images/clickon.png" alt="" /></p>
+<p>下载好UE引擎的源码后，进入文件夹，以管理员的权限先运行<code>Setup.bat</code>脚本，让其将相关依赖下载下来。<br />
+<img src="/images/bd9acf76869c74ab4d1873f58d013ab.png" alt="bd.png" /><br />
+下载完成后再运行<code>GenerateProjectFiles.bat</code>，之后便可以生成<code>.sln</code>文件，然后用vs打开。（这里最好用vs2022打开）。打开在上面的选项框里选择<code>Development Editor</code>,平台选择<code>win64</code>,然后在右边的工程栏目上右键UE5选择build构建。<br />
+<img src="/images/fa7e162897a6e10cdf502e1a9983387.png" alt="fa7e162897" /><br />
+编译过程可能会耗很长时间，而且内存小的设备可能会因为内存太小而阻塞进程，因此这里可以选择让虚拟内存开大一点，我这里选择将虚拟内存设置为16GB。编译完后，就可以到<code>Engine\Binaries\Win64</code>工作目录下找到<strong>UnrealEditor</strong>的<strong>exe</strong>文件。<br />
+<img src="/images/e03c14fb5a905b481ea517038aa204f.png" alt="e03c14f" /><br />
+打开后界面就是这样<br />
+<img src="/images/77dfc938340aebe63e530d2f193233d.png" alt="77dfc938" /><br />
+UE编译后的大小大概是200多G，所以要准备一个大一点的磁盘，我这里的F盘已经满了。<br />
+<img src="/images/eb64f08fbd70bc14c5136b692c44183.png" alt="eb64f08f" /></p>
+<h2 id="项目打包"><a class="markdownIt-Anchor" href="#项目打包"></a> 项目打包</h2>
+<p>项目完成后，要将项目打包好发布，这里可以选择你要打包的平台进行打包。<br />
+<img src="/images/166134d6b780aa1e4f331919bea3671.png" alt="166134d6b" /><br />
+打包时间也很长，有时候还会报错<br />
+<img src="/images/c2132dd6f70b7f4d6f81d833e68f6d7.png" alt="c2132dd6" /><br />
+完成之后便可以运行了。<br />
+<img src="/images/a2f513994716cc1dea790f78eacbf17.png" alt="a2f51399" /></p>
 
     </div>
 
@@ -327,21 +335,18 @@
 </div>
 
           <div class="post-tags">
-              <a href="/tags/OpenGL/" rel="tag"><i class="fa fa-tag"></i> OpenGL</a>
+              <a href="/tags/UE/" rel="tag"><i class="fa fa-tag"></i> UE</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2023/11/05/%E4%B8%8D%E5%90%8C%E7%9A%84%E5%85%89%E7%85%A7/" rel="prev" title="不同的光照">
-                  <i class="fa fa-angle-left"></i> 不同的光照
+                <a href="/2024/01/29/%E5%87%A0%E4%BD%95%E7%9D%80%E8%89%B2%E5%99%A8/" rel="prev" title="几何着色器">
+                  <i class="fa fa-angle-left"></i> 几何着色器
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/12/13/%E6%B7%B7%E5%90%88%E9%9D%A2%E5%89%94%E9%99%A4/" rel="next" title="混合面剔除">
-                  混合面剔除 <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>
